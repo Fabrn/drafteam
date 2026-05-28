@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Codes</h1>
+
+    <input type="text" id="blue_team_uuid" readonly value="{{ draft.blueTeamUuid }}" />
+    <input type="text" id="red_team_uuid" readonly value="{{ draft.redTeamUuid }}" />
+{% endblock %}
