@@ -32,8 +32,19 @@
         };
 
         window.addEventListener('DOMContentLoaded', function () {
-            document.querySelector('.btn-ready-check').addEventListener('click', () => {
-                window.fetch("{{ path('draft_ready_check', { identifier: draftWithRole.draft.identifier, role: app.request.attributes.get('role') }) }}")
+            document.querySelector('.btn-ready-check').addEventListener('click', async () => {
+                const response = await window.fetch("{{ path('draft_ready_check', { identifier: draftWithRole.draft.identifier, role: app.request.attributes.get('role') }) }}");
+
+                if (!response.ok) {
+                    window.alert('Something went wrong while trying to ready check ! Please try again.');
+                    return;
+                }
+
+                const json = await response.json();
+
+                if (!json.success) {
+                    window.alert('Something went wrong while trying to ready check ! Please try again.');
+                }
             });
         });
     </script>

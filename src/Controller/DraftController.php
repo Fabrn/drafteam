@@ -11,6 +11,7 @@ use App\ValueObject\DraftWithRole;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Clock\DatePoint;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -66,16 +67,73 @@ class DraftController extends AbstractController
     #[Route('/{identifier}/{role}', name: 'view')]
     public function view(DraftWithRole $draftWithRole, ChampionRepository $championRepository): Response
     {
-        return $this->render('Site/draft/view.html.twig', [
+        $response = $this->render('Site/draft/view.html.twig', [
             'draftWithRole' => $draftWithRole,
             'champions' => $championRepository->findAll(),
         ]);
+
+        $cookie = Cookie::create(
+            name: 'drafteam_' . $draftWithRole->draft->identifier,
+            value: DraftRole::BlueDrafter === $draftWithRole->role ? 'blue' : 'red',
+            expire: new DatePoint('+2 hours'),
+        );
+
+        $response->headers->setCookie($cookie);
+
+        return $response;
     }
 
     #[Route('/{identifier}/{role}/ready_check', name: 'ready_check')]
-    public function readyCheck(DraftWithRole $draftWithRole, HubInterface $hub): JsonResponse
+    public function readyCheck(DraftWithRole $draftWithRole, HubInterface $hub, Request $request): JsonResponse
     {
-        $draftWithRole->draft->redTeamReadyChecked = true;
+        $cookie = $request->cookies->get('drafteam_' . $draftWithRole->draft->identifier);
+
+        if (null === $cookie) {
+            return $this->json(
+                data: [
+                    'success' => false,
+                    'message' => Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                ],
+                status: Response::HTTP_FORBIDDEN,
+            );
+        }
+
+        if (DraftRole::Spectator === $draftWithRole->role) {
+            return $this->json(
+                data: [
+                    'success' => false,
+                    'message' => Response::$statusTexts[Response::HTTP_BAD_REQUEST],
+                ],
+                status: Response::HTTP_BAD_REQUEST,
+            );
+        }
+
+        if (DraftRole::BlueDrafter === $draftWithRole->role) {
+            // Check for cookie of blue drafter
+            if ('blue' !== $cookie) {
+                return $this->json(
+                    data: [
+                        'success' => false,
+                        'message' => Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                    ],
+                    status: Response::HTTP_FORBIDDEN,
+                );
+            }
+
+            $draftWithRole->draft->blueTeamReadyChecked = true;
+        } else {
+            if ('red' !== $cookie) {
+                return $this->json(
+                    data: [
+                        'success' => false,
+                        'message' => Response::$statusTexts[Response::HTTP_FORBIDDEN],
+                    ],
+                    status: Response::HTTP_FORBIDDEN,
+                );
+            }
+
+            $draftWithRole->draft->redTeamReadyChecked = true;
+        }
 
         $this->entityManager->flush();
 
