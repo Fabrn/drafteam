@@ -1,8 +1,31 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    <style>
+        input {
+            width: 100%;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <h1>Codes</h1>
 
-    <input type="text" id="blue_team_uuid" readonly value="{{ draft.blueTeamUuid }}" />
-    <input type="text" id="red_team_uuid" readonly value="{{ draft.redTeamUuid }}" />
+    <div>
+        <label for="blue_team_uuid">Blue team link</label>
+        <input type="text" id="blue_team_uuid" name="blue_team_uuid" readonly
+               value="{{ absolute_url(path('draft_view', { identifier: draft.identifier, role: draft.blueTeamUuid })) }}" />
+    </div>
+
+    <div>
+        <label for="red_team_uuid">Read team link</label>
+        <input type="text" id="red_team_uuid" name="red_team_uuid" readonly
+               value="{{ absolute_url(path('draft_view', { identifier: draft.identifier, role: draft.redTeamUuid })) }}" />
+    </div>
+
+    <div>
+        <label for="spectator_uuid">Spectator link</label>
+        <input type="text" id="spectator_uuid" name="spectator_uuid" readonly
+               value="{{ absolute_url(path('draft_view', { identifier: draft.identifier, role: draft.spectatorUuid })) }}" />
+    </div>
 {% endblock %}

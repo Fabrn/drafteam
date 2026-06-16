@@ -3,15 +3,20 @@
 namespace App\Controller;
 
 use App\Entity\Draft;
+use App\Enum\DraftRole;
+use App\Enum\DraftStatus;
 use App\Form\DraftType;
-use App\Repository\DraftRepository;
+use App\Repository\ChampionRepository;
+use App\ValueObject\DraftWithRole;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Clock\DatePoint;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Uid\Uuid;
 
 #[Route('/draft', name: 'draft_')]
 class DraftController extends AbstractController
@@ -34,11 +39,22 @@ class DraftController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $draft->status = DraftStatus::Pending;
+
+            if ($draft->isSandbox) {
+                // Automatic ready check on sandbox creation
+                $draft->blueTeamReadyChecked = true;
+                $draft->redTeamReadyChecked = true;
+
+                // Since ready checked is skipped, draft is already ongoing
+                $draft->status = DraftStatus::Ongoing;
+            }
+
             $this->entityManager->persist($draft);
             $this->entityManager->flush();
 
-            return $this->redirectToRoute('draft_codes', [
-                'identifier' => $draft->identifier,
+            return $this->render('Site/draft/codes.html.twig', [
+                'draft' => $draft,
             ]);
         }
 
@@ -47,17 +63,32 @@ class DraftController extends AbstractController
         ]);
     }
 
-    #[Route('/{identifier}/codes', name: 'codes')]
-    public function codes(Uuid $identifier, DraftRepository $draftRepository): Response
+    #[Route('/{identifier}/{role}', name: 'view')]
+    public function view(DraftWithRole $draftWithRole, ChampionRepository $championRepository): Response
     {
-        $draft = $draftRepository->findOneBy(['identifier' => $identifier]);
+        return $this->render('Site/draft/view.html.twig', [
+            'draftWithRole' => $draftWithRole,
+            'champions' => $championRepository->findAll(),
+        ]);
+    }
 
-        if (null === $draft) {
-            throw $this->createNotFoundException();
-        }
+    #[Route('/{identifier}/{role}/ready_check', name: 'ready_check')]
+    public function readyCheck(DraftWithRole $draftWithRole, HubInterface $hub): JsonResponse
+    {
+        $draftWithRole->draft->redTeamReadyChecked = true;
 
-        return $this->render('Site/draft/codes.html.twig', [
-            'draft' => $draft,
+        $this->entityManager->flush();
+
+        $hub->publish(new Update(
+            topics: 'http://localhost/draft/' . $draftWithRole->draft->identifier,
+            data: \json_encode([
+                'action' => 'ready_check',
+                'side' => $draftWithRole->role === DraftRole::BlueDrafter ? 'blue' : 'red',
+            ]),
+        ));
+
+        return $this->json([
+            'success' => true,
         ]);
     }
 }

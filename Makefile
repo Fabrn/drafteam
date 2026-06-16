@@ -66,3 +66,7 @@ migration: ## Generates a migration
 
 migrate: ## Executes migrations
 	@$(SYMFONY) doctrine:migrations:migrate
+
+## —— Custom commands ———————————————————————————————————————————————————————————————
+update-champions:
+	@$(SYMFONY) app:champions:update
