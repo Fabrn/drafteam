@@ -1,5 +1,5 @@
-<div {{ attributes.defaults(stimulus_controller('hello', { 'url': mercure('http://localhost/draft/' ~ this.identifier) })) }}>
-    C'est la draft !
+<div {{ attributes.defaults(stimulus_controller('hello', { 'url': mercure(draft_mercure_url(this.draft)) })) }}>
+    C'est la draft de <strong>{{ this.draft.blueTeamName }} VS {{ this.draft.redTeamName }}</strong> !
 
     <p>Role : {{ this.role == enum('App\\Enum\\DraftRole').BlueDrafter ? 'Bleu' : (this.role == enum('App\\Enum\\DraftRole').RedDrafter ? 'Rouge' : 'Spec') }}</p>
 
@@ -18,5 +18,51 @@
         <button type="button" class="btn-ready-check" data-action="live#action" data-live-action-param="readyCheck">
             Ready check bleu
         </button>
+    {% endif %}
+
+    {% if this.draft.status === enum('App\\Enum\\DraftStatus').Ongoing %}
+        <p><strong>Phase courante : {{ this.draft.phase.value }}</strong></p>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 4px;">
+            {% for champion in this.champions %}
+                <label for="champion_grid_item_{{ champion.champion.lolKey }}">
+                    <input type="radio" name="champion_grid_item" id="champion_grid_item_{{ champion.champion.lolKey }}" data-id="{{ champion.champion.id }}" />
+                    <img src="{{ lol_champion_square_image_url(champion.champion.lolId) }}" alt="{{ champion.name }}'s image" width="64" height="64" />
+                </label>
+            {% endfor %}
+        </div>
+
+        <button type="button" id="btn-ban" disabled>Ban champion</button>
+
+        <hr />
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div style="border: 1px solid black;">
+                <h3>Bans blue side</h3>
+
+                <div style="display: flex; gap: 4px">
+                    {% for i in 0..4 %}
+                        {% if this.draft.blueSideBans[i] is defined %}
+                            <img src="{{ lol_champion_square_image_url(this.draft.blueSideBans[i].champion.lolId) }}" alt="image" width="64" height="64" />
+                        {% else %}
+                            <div style="width: 64px; height: 64px; background: dimgray;"></div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div style="border: 1px solid black;">
+                <h3>Bans red side</h3>
+
+                <div style="display: flex; gap: 4px">
+                    {% for i in 0..4 %}
+                        {% if this.draft.redSideBans[i] is defined %}
+                            <img src="{{ lol_champion_square_image_url(this.draft.redSideBans[i].champion.lolId) }}" alt="image" width="64" height="64" />
+                        {% else %}
+                            <div style="width: 64px; height: 64px; background: dimgray;"></div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     {% endif %}
 </div>

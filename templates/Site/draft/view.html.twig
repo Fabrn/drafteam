@@ -1,5 +1,14 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    <style>
+        [name="champion_grid_item"]:checked + img {
+            filter: brightness(150%);
+            border: 2px solid red;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     {{ component('Draft', { identifier: draftWithRole.draft.identifier, role: draftWithRole.role }) }}
 {% endblock %}

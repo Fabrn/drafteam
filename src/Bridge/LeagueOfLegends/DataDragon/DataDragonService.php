@@ -8,6 +8,7 @@ use Symfony\Component\DependencyInjection\Attribute\Target;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\Normalizer\UnwrappingDenormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\HttpClient\Exception\ExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
@@ -17,6 +18,7 @@ final readonly class DataDragonService
         #[Target('datadragon.client')]
         private HttpClientInterface $httpClient,
         private SerializerInterface $serializer,
+        private CacheInterface $cache,
     ) {}
 
     /**
@@ -25,15 +27,17 @@ final readonly class DataDragonService
      */
     public function getVersions(): array
     {
-        try {
-            $response = $this->httpClient->request(method: Request::METHOD_GET, url: '/api/versions.json');
+        return $this->cache->get('lol.versions', function () {
+            try {
+                $response = $this->httpClient->request(method: Request::METHOD_GET, url: '/api/versions.json');
 
-            $content = $response->getContent();
-        } catch (ExceptionInterface $e) {
-            throw new DataDragonRequestException($e->getMessage(), previous: $e);
-        }
+                $content = $response->getContent();
+            } catch (ExceptionInterface $e) {
+                throw new DataDragonRequestException($e->getMessage(), previous: $e);
+            }
 
-        return \json_decode($content, true);
+            return \json_decode($content, true);
+        });
     }
 
     /**

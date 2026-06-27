@@ -2,10 +2,13 @@
 
 namespace App\Entity;
 
+use App\Enum\DraftPhase;
+use App\Enum\DraftSide;
 use App\Enum\DraftStatus;
 use App\Repository\DraftRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\Uid\Uuid;
@@ -13,6 +16,34 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Entity(repositoryClass: DraftRepository::class)]
 class Draft
 {
+    /**
+     * @var list<DraftBan>
+     */
+    public array $blueSideBans {
+        get => $this->bans->filter(static fn (DraftBan $ban) => DraftSide::Blue === $ban->side)->getValues();
+    }
+
+    /**
+     * @var list<DraftBan>
+     */
+    public array $redSideBans {
+        get => $this->bans->filter(static fn (DraftBan $ban) => DraftSide::Red === $ban->side)->getValues();
+    }
+
+    /**
+     * @var list<DraftPick>
+     */
+    public array $blueSidePicks {
+        get => $this->picks->filter(static fn (DraftPick $pick) => DraftSide::Blue === $pick->side)->getValues();
+    }
+
+    /**
+     * @var list<DraftPick>
+     */
+    public array $redSidePicks {
+        get => $this->picks->filter(static fn (DraftPick $pick) => DraftSide::Red === $pick->side)->getValues();
+    }
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -45,6 +76,10 @@ class Draft
     #[ORM\Column(options: ['default' => false])]
     public bool $isSandbox = false;
 
+    #[ORM\Column(options: ['default' => DraftPhase::BlueBan1->value])]
+    public DraftPhase $phase = DraftPhase::BlueBan1;
+
+    #[ORM\OrderBy(['position' => Order::Ascending->value])]
     #[ORM\OneToMany(targetEntity: DraftBan::class, mappedBy: 'draft', cascade: ['persist', 'remove'])]
     public Collection $bans;
 
