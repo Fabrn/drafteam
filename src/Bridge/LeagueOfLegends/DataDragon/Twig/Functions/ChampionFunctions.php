@@ -19,4 +19,10 @@ final readonly class ChampionFunctions
             $lolId,
         );
     }
+
+    #[AsTwigFunction(name: 'lol_champion_splash_image_url')]
+    public function getSplashImageUrl(string $lolId): string
+    {
+        return \sprintf('https://ddragon.leagueoflegends.com/cdn/img/champion/splash/%s_0.jpg', $lolId);
+    }
 }

@@ -1,1 +1,7 @@
 - Pouvoir désactiver des champions à la création de la draft
+- Signaler qu'on a fait une erreur et proposer de rollback à la phase précédente
+- Créer un match plutôt qu'une draft, avec BOX et donc jusqu'à X drafts associées
+    - Afficher le score actuelle dans la draft
+    - Sélectionner un mode de draft pour pré-ban les champions en fearless par ex
+- Logo si dispo dans les drafts
+- Pouvoir sélectionner le patch pour une draft => impacter la liste des champions
