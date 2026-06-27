@@ -112,4 +112,24 @@ enum DraftPhase: string
 
         return self::ordered()[$pos + 1] ?? self::RedPick5;
     }
+
+    public function isBanPhase(): bool
+    {
+        return \in_array(
+            $this,
+            [
+                self::BlueBan1,
+                self::BlueBan2,
+                self::BlueBan3,
+                self::BlueBan4,
+                self::BlueBan5,
+                self::RedBan1,
+                self::RedBan2,
+                self::RedBan3,
+                self::RedBan4,
+                self::RedBan5,
+            ],
+            strict: true,
+        );
+    }
 }

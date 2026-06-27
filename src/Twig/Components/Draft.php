@@ -5,6 +5,8 @@ namespace App\Twig\Components;
 use App\Entity\ChampionData;
 use App\Entity\Draft as DraftEntity;
 use App\Entity\DraftBan;
+use App\Entity\DraftPick;
+use App\Enum\DraftPhase;
 use App\Enum\DraftRole;
 use App\Enum\DraftSide;
 use App\Enum\DraftStatus;
@@ -13,6 +15,7 @@ use App\Repository\ChampionRepository;
 use App\Repository\DraftRepository;
 use App\Twig\Functions\DraftFunctions;
 use App\ValueObject\Mercure\Ban;
+use App\ValueObject\Mercure\Pick;
 use App\ValueObject\Mercure\ReadyCheck;
 use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\EntityManagerInterface;
@@ -43,6 +46,10 @@ final class Draft
         ]);
     }
 
+    public DraftSide $draftSide {
+        get => DraftRole::BlueDrafter === $this->role ? DraftSide::Blue : DraftSide::Red;
+    }
+
     /**
      * @var list<ChampionData>
      */
@@ -71,10 +78,8 @@ final class Draft
 
         if (DraftRole::BlueDrafter === $this->role) {
             $this->draft->blueTeamReadyChecked = true;
-            $side = DraftSide::Blue;
         } else {
             $this->draft->redTeamReadyChecked = true;
-            $side = DraftSide::Red;
         }
 
         if ($this->draft->blueTeamReadyChecked && $this->draft->redTeamReadyChecked) {
@@ -85,7 +90,7 @@ final class Draft
 
         $this->hub->publish(new Update(
             topics: $this->draftFunctions->getDraftMercureUrl($this->draft),
-            data: \json_encode(new ReadyCheck($side)),
+            data: \json_encode(new ReadyCheck($this->draftSide)),
         ));
     }
 
@@ -109,6 +114,36 @@ final class Draft
         $this->hub->publish(new Update(
             topics: $this->draftFunctions->getDraftMercureUrl($this->draft),
             data: \json_encode(new Ban($this->championDataRepository->findOneBy([
+                'champion' => $champion,
+                'language' => 'en_US', // TODO locale
+            ]))),
+        ));
+    }
+
+    #[LiveAction]
+    public function pick(#[LiveArg] int $id): void
+    {
+        $champion = $this->championRepository->find($id);
+
+        $this->entityManager->persist(new DraftPick(
+            draft: $this->draft,
+            champion: $champion,
+            side: $this->draft->phase->getSide(),
+            position: $this->draft->phase->getPosition(),
+            createdAt: new DatePoint(),
+        ));
+
+        if (DraftPhase::RedPick5 === $this->draft->phase) {
+            $this->draft->status = DraftStatus::Finished;
+        } else {
+            $this->draft->phase = $this->draft->phase->getNext();
+        }
+
+        $this->entityManager->flush();
+
+        $this->hub->publish(new Update(
+            topics: $this->draftFunctions->getDraftMercureUrl($this->draft),
+            data: \json_encode(new Pick($this->championDataRepository->findOneBy([
                 'champion' => $champion,
                 'language' => 'en_US', // TODO locale
             ]))),

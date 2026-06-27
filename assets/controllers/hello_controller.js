@@ -18,17 +18,16 @@ export default class extends Controller {
     async initialize() {
         this.component = await getComponent(this.element);
 
-        const banButton = document.getElementById('btn-ban');
-
         document.querySelectorAll('[name="champion_grid_item"]').forEach(checkbox => {
             checkbox.addEventListener('change', () => {
-                banButton.removeAttribute('disabled');
-            });
-        });
+                const banButton = document.getElementById('btn-ban');
+                const pickButton = document.getElementById('btn-pick');
 
-        banButton.addEventListener('click', () => {
-            this.component.action('ban', {
-                id: document.querySelector('[name="champion_grid_item"]:checked').getAttribute('data-id'),
+                banButton.removeAttribute('disabled');
+                pickButton.removeAttribute('disabled');
+
+                banButton.setAttribute('data-live-id-param', checkbox.value);
+                pickButton.setAttribute('data-live-id-param', checkbox.value);
             });
         });
     }
@@ -39,10 +38,7 @@ export default class extends Controller {
 
             eventSource.onmessage = e => {
                 const json = JSON.parse(e.data);
-
-                if ('ban' === json.action) {
-                    window.alert('Ban ' + json.championName);
-                }
+                console.log(json);
 
                 this.component.render();
             };
