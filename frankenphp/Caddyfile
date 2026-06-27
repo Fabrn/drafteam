@@ -52,7 +52,7 @@
 
 	@frontController path index.php
 	php @frontController {
-		{$FRANKENPHP_SITE_CONFIG}
+		# {$FRANKENPHP_SITE_CONFIG}
 
 		worker {
 			file ./public/index.php

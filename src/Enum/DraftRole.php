@@ -2,9 +2,9 @@
 
 namespace App\Enum;
 
-enum DraftRole
+enum DraftRole: string
 {
-    case BlueDrafter;
-    case RedDrafter;
-    case Spectator;
+    case BlueDrafter = 'blue_drafter';
+    case RedDrafter = 'red_drafter';
+    case Spectator = 'spectator';
 }

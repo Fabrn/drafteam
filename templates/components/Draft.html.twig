@@ -1,0 +1,22 @@
+<div {{ attributes.defaults(stimulus_controller('hello', { 'url': mercure('http://localhost/draft/' ~ this.identifier) })) }}>
+    C'est la draft !
+
+    <p>Role : {{ this.role == enum('App\\Enum\\DraftRole').BlueDrafter ? 'Bleu' : (this.role == enum('App\\Enum\\DraftRole').RedDrafter ? 'Rouge' : 'Spec') }}</p>
+
+    <ul>
+        <li>Blue team ready : {{ this.draft.blueTeamReadyChecked ? 'Oui' : 'Non' }}</li>
+        <li>Read team ready : {{ this.draft.redTeamReadyChecked ? 'Oui' : 'Non' }}</li>
+    </ul>
+
+    {% if not this.draft.redTeamReadyChecked and this.role == enum('App\\Enum\\DraftRole').RedDrafter %}
+        <button type="button" class="btn-ready-check" {{ live_action('readyCheck') }}>
+            Ready check rouge
+        </button>
+    {% endif %}
+
+    {% if not this.draft.blueTeamReadyChecked and this.role == enum('App\\Enum\\DraftRole').BlueDrafter %}
+        <button type="button" class="btn-ready-check" data-action="live#action" data-live-action-param="readyCheck">
+            Ready check bleu
+        </button>
+    {% endif %}
+</div>

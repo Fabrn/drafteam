@@ -1,51 +1,5 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    C'est la draft !
-
-    <p>Role : {{ draftWithRole.role == enum('App\\Enum\\DraftRole').BlueDrafter ? 'Bleu' : (draftWithRole.role == enum('App\\Enum\\DraftRole').RedDrafter ? 'Rouge' : 'Spec') }}</p>
-
-    <ul>
-        <li>Blue team ready : {{ draftWithRole.draft.blueTeamReadyChecked ? 'Oui' : 'Non' }}</li>
-        <li>Read team ready : {{ draftWithRole.draft.redTeamReadyChecked ? 'Oui' : 'Non' }}</li>
-    </ul>
-
-    {% if not draftWithRole.draft.redTeamReadyChecked and draftWithRole.role == enum('App\\Enum\\DraftRole').RedDrafter %}
-        <button type="button" class="btn-ready-check">
-            Ready check rouge
-        </button>
-    {% endif %}
-
-    {% if not draftWithRole.draft.blueTeamReadyChecked and draftWithRole.role == enum('App\\Enum\\DraftRole').BlueDrafter %}
-        <button type="button" class="btn-ready-check">
-            Ready check bleu
-        </button>
-    {% endif %}
-{% endblock %}
-
-{% block javascripts %}
-    <script>
-        const eventSource = new EventSource("{{ mercure('http://localhost/draft/' ~ draftWithRole.draft.identifier) | escape('js') }}");
-
-        eventSource.onmessage = e => {
-            console.log(JSON.parse(e.data));
-        };
-
-        window.addEventListener('DOMContentLoaded', function () {
-            document.querySelector('.btn-ready-check').addEventListener('click', async () => {
-                const response = await window.fetch("{{ path('draft_ready_check', { identifier: draftWithRole.draft.identifier, role: app.request.attributes.get('role') }) }}");
-
-                if (!response.ok) {
-                    window.alert('Something went wrong while trying to ready check ! Please try again.');
-                    return;
-                }
-
-                const json = await response.json();
-
-                if (!json.success) {
-                    window.alert('Something went wrong while trying to ready check ! Please try again.');
-                }
-            });
-        });
-    </script>
+    {{ component('Draft', { identifier: draftWithRole.draft.identifier, role: draftWithRole.role }) }}
 {% endblock %}
