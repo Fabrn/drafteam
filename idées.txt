@@ -5,3 +5,4 @@
     - Sélectionner un mode de draft pour pré-ban les champions en fearless par ex
 - Logo si dispo dans les drafts
 - Pouvoir sélectionner le patch pour une draft => impacter la liste des champions
+- Lien admin pour interférer avec la draft ? Passer à la manche suivante ? Cocher un truc permettant de dire que les drafteurs sont admin ?

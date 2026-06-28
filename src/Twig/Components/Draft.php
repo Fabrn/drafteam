@@ -2,6 +2,7 @@
 
 namespace App\Twig\Components;
 
+use App\Bridge\LeagueOfLegends\DataDragon\DataDragonService;
 use App\Entity\ChampionData;
 use App\Entity\Draft as DraftEntity;
 use App\Entity\DraftBan;
@@ -17,7 +18,6 @@ use App\Twig\Functions\DraftFunctions;
 use App\ValueObject\Mercure\Ban;
 use App\ValueObject\Mercure\Pick;
 use App\ValueObject\Mercure\ReadyCheck;
-use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\Mercure\HubInterface;
@@ -40,6 +40,9 @@ final class Draft
     #[LiveProp]
     public DraftRole $role;
 
+    #[LiveProp(writable: true)]
+    public string $search = '';
+
     public DraftEntity $draft {
         get => $this->draftRepository->findOneBy([
             'identifier' => $this->identifier,
@@ -54,10 +57,17 @@ final class Draft
      * @var list<ChampionData>
      */
     public array $champions {
-        get => $this->championDataRepository->findBy(
-            criteria: ['language' => 'en_US'],
-            orderBy: ['name' => Order::Ascending->value],
-        ); // TODO locale
+        get => $this->championDataRepository->findContainingName($this->search);
+    }
+
+    public ?string $latestPatch {
+        get {
+            try {
+                return $this->dataDragonService->getLatestVersion();
+            } catch (\Throwable) {
+                return null;
+            }
+        }
     }
 
     public function __construct(
@@ -67,6 +77,7 @@ final class Draft
         private readonly DraftFunctions $draftFunctions,
         private readonly ChampionDataRepository $championDataRepository,
         private readonly ChampionRepository $championRepository,
+        private readonly DataDragonService $dataDragonService,
     ) {}
 
     #[LiveAction]

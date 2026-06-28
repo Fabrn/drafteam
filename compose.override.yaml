@@ -10,8 +10,8 @@ services:
       - ./:/app
       - ./frankenphp/Caddyfile:/etc/frankenphp/Caddyfile:ro
       - ./frankenphp/conf.d/20-app.dev.ini:/usr/local/etc/php/app.conf.d/20-app.dev.ini:ro
-      # Keep var/ off the bind-mount for faster I/O on Mac/Windows; comment to inspect from the host.
-      - /app/var
+      # Keep var/ off the bind-mount for faster I/O on Mac/Windows; shared with the tailwind container.
+      - app_var:/app/var
       # If you develop on Mac or Windows you can remove the vendor/ directory
       #  from the bind-mount for better performance by enabling the next line:
       #- /app/vendor
@@ -26,6 +26,23 @@ services:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
     tty: true
+
+  tailwind:
+    image: ${IMAGES_PREFIX:-}app-php-dev
+    build:
+      context: .
+      target: frankenphp_dev
+    restart: unless-stopped
+    depends_on:
+      php:
+        condition: service_healthy
+    volumes:
+      - ./:/app
+      - app_var:/app/var
+    # Skip the FrankenPHP entrypoint (DB wait, migrations) — not needed for the asset watcher.
+    entrypoint: ["docker-php-entrypoint"]
+    command: ["php", "bin/console", "tailwind:build", "--watch"]
+    tty: true
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
 
@@ -34,3 +51,6 @@ services:
     ports:
       - "5432"
 ###< doctrine/doctrine-bundle ###
+
+volumes:
+  app_var:

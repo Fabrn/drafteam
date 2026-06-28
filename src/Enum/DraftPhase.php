@@ -132,4 +132,34 @@ enum DraftPhase: string
             strict: true,
         );
     }
+
+    public function isBanPhaseForSide(DraftSide $side, int $index): bool
+    {
+        if ($this->getSide() !== $side) {
+            return false;
+        }
+
+        return match ($index) {
+            1 => \in_array($this, [DraftPhase::BlueBan1, DraftPhase::RedBan1]),
+            2 => \in_array($this, [DraftPhase::BlueBan2, DraftPhase::RedBan2]),
+            3 => \in_array($this, [DraftPhase::BlueBan3, DraftPhase::RedBan3]),
+            4 => \in_array($this, [DraftPhase::BlueBan4, DraftPhase::RedBan4]),
+            5 => \in_array($this, [DraftPhase::BlueBan5, DraftPhase::RedBan5]),
+        };
+    }
+
+    public function isPickPhaseForSide(DraftSide $side, int $index): bool
+    {
+        if ($this->getSide() !== $side) {
+            return false;
+        }
+
+        return match ($index) {
+            1 => \in_array($this, [DraftPhase::BluePick1, DraftPhase::RedPick1]),
+            2 => \in_array($this, [DraftPhase::BluePick2, DraftPhase::RedPick2]),
+            3 => \in_array($this, [DraftPhase::BluePick3, DraftPhase::RedPick3]),
+            4 => \in_array($this, [DraftPhase::BluePick4, DraftPhase::RedPick4]),
+            5 => \in_array($this, [DraftPhase::BluePick5, DraftPhase::RedPick5]),
+        };
+    }
 }
