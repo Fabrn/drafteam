@@ -107,7 +107,7 @@ class Draft
 
     public function isChampionAvailable(Champion $champion): bool
     {
-        return $this->picks->filter(static fn (DraftPick $pick) => $pick->champion->id === $champion->id)->isEmpty()
+        return $this->picks->filter(static fn (DraftPick $pick) => $pick->champion->id === $champion->id && !$pick->isTemporary)->isEmpty()
             && $this->bans->filter(static fn (DraftBan $ban) => $ban->champion->id === $champion->id)->isEmpty()
         ;
     }

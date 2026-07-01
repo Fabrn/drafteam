@@ -25,5 +25,7 @@ class DraftPick
         public int $position,
         #[ORM\Column(type: 'date_point')]
         public DatePoint $createdAt,
+        #[ORM\Column(options: ['default' => false])]
+        public bool $isTemporary = false,
     ) {}
 }

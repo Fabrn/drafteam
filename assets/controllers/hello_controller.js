@@ -28,6 +28,10 @@ export default class extends Controller {
 
                 banButton.setAttribute('data-live-id-param', checkbox.value);
                 pickButton.setAttribute('data-live-id-param', checkbox.value);
+
+                this.component.action('prePick', {
+                    id: checkbox.value,
+                });
             });
         });
     }
@@ -38,7 +42,6 @@ export default class extends Controller {
 
             eventSource.onmessage = e => {
                 const json = JSON.parse(e.data);
-                console.log(json);
 
                 this.component.render();
             };

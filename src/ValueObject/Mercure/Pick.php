@@ -14,7 +14,7 @@ final readonly class Pick implements \JsonSerializable
     {
         return [
             'action' => 'pick',
-            'championName' => $this->champion->name,
+            'champion_name' => $this->champion->name,
         ];
     }
 }

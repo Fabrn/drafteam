@@ -17,6 +17,7 @@ use App\Repository\DraftRepository;
 use App\Twig\Functions\DraftFunctions;
 use App\ValueObject\Mercure\Ban;
 use App\ValueObject\Mercure\Pick;
+use App\ValueObject\Mercure\PrePick;
 use App\ValueObject\Mercure\ReadyCheck;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Clock\DatePoint;
@@ -108,6 +109,11 @@ final class Draft
     #[LiveAction]
     public function ban(#[LiveArg] int $id): void
     {
+        if (!$this->draft->phase->isBanPhase()) {
+            // If it is the ban phase, it means it is not the pick phase, so we can't pre-pick
+            return;
+        }
+
         $champion = $this->championRepository->find($id);
 
         $this->entityManager->persist(new DraftBan(
@@ -134,15 +140,32 @@ final class Draft
     #[LiveAction]
     public function pick(#[LiveArg] int $id): void
     {
+        if ($this->draft->phase->isBanPhase()) {
+            // If it is the ban phase, it means it is not the pick phase, so we can't pre-pick
+            return;
+        }
+
         $champion = $this->championRepository->find($id);
 
-        $this->entityManager->persist(new DraftPick(
-            draft: $this->draft,
-            champion: $champion,
-            side: $this->draft->phase->getSide(),
-            position: $this->draft->phase->getPosition(),
-            createdAt: new DatePoint(),
-        ));
+        // Transforms temporary pick or create a pick
+        /** @var false|DraftPick $currentTempPick */
+        $currentTempPick = $this->draft->picks
+            ->filter(fn (DraftPick $pick) => $pick->isTemporary && $pick->side === $this->draft->phase->getSide())
+            ->first()
+        ;
+
+        if (false !== $currentTempPick) {
+            $currentTempPick->champion = $champion;
+            $currentTempPick->isTemporary = false;
+        } else {
+            $this->entityManager->persist(new DraftPick(
+                draft: $this->draft,
+                champion: $champion,
+                side: $this->draft->phase->getSide(),
+                position: $this->draft->phase->getPosition(),
+                createdAt: new DatePoint(),
+            ));
+        }
 
         if (DraftPhase::RedPick5 === $this->draft->phase) {
             $this->draft->status = DraftStatus::Finished;
@@ -158,6 +181,51 @@ final class Draft
                 'champion' => $champion,
                 'language' => 'en_US', // TODO locale
             ]))),
+        ));
+    }
+
+    #[LiveAction]
+    public function prePick(#[LiveArg] int $id): void
+    {
+        if ($this->draft->phase->isBanPhase()) {
+            // If it is the ban phase, it means it is not the pick phase, so we can't pre-pick
+            return;
+        }
+
+        $champion = $this->championRepository->find($id);
+
+        // Replaces current temporary pick if exists, otherwise create a pick
+        /** @var false|DraftPick $currentTempPick */
+        $currentTempPick = $this->draft->picks
+            ->filter(fn (DraftPick $pick) => $pick->isTemporary && $pick->side === $this->draft->phase->getSide())
+            ->first()
+        ;
+
+        if (false !== $currentTempPick) {
+            $currentTempPick->champion = $champion;
+        } else {
+            $this->entityManager->persist(new DraftPick(
+                draft: $this->draft,
+                champion: $champion,
+                side: $this->draft->phase->getSide(),
+                position: $this->draft->phase->getPosition(),
+                createdAt: new DatePoint(),
+                isTemporary: true,
+            ));
+        }
+
+        $this->entityManager->flush();
+
+        $this->hub->publish(new Update(
+            topics: $this->draftFunctions->getDraftMercureUrl($this->draft),
+            data: \json_encode(new PrePick(
+                champion: $this->championDataRepository->findOneBy([
+                    'champion' => $champion,
+                    'language' => 'en_US', // TODO locale
+                ]),
+                side: $this->draftSide,
+                position: $this->draft->phase->getPosition(),
+            )),
         ));
     }
 }
