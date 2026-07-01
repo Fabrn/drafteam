@@ -84,7 +84,7 @@
                 </div>
             </div>
             {# Grid #}
-            <div class="flex flex-wrap justify-between gap-4 overflow-auto max-h-full px-4 pb-20">
+            <div class="flex flex-wrap justify-between gap-4 overflow-auto max-h-full px-4 pb-20 scrollbar-none">
                 {% for champion in this.champions %}
                     <label for="champion_grid_item_{{ champion.champion.lolKey }}" class="cursor-pointer">
                         {% if this.role != enum('App\\Enum\\DraftRole').Spectator %}
@@ -124,7 +124,9 @@
                 {% for i in 0..4 %}
                     <div {% if this.draft.phase.banPhaseForSide(enum('App\\Enum\\DraftSide').Blue, i + 1) %}class="current-phase current-phase__blue"{% endif %}>
                         {% if this.draft.blueSideBans[i] is defined %}
-                            <img src="{{ lol_champion_square_image_url(this.draft.blueSideBans[i].champion.lolId) }}" alt="image" width="64" height="64" class="grayscale-100" />
+                            <div class="ban">
+                                <img src="{{ lol_champion_square_image_url(this.draft.blueSideBans[i].champion.lolId) }}" alt="image" width="64" height="64" class="grayscale-100" />
+                            </div>
                         {% else %}
                             <div class="w-[64px] h-[64px] bg-sky-950"></div>
                         {% endif %}
@@ -159,7 +161,9 @@
                 {% for i in 0..4 %}
                     <div {% if this.draft.phase.banPhaseForSide(enum('App\\Enum\\DraftSide').Red, i + 1) %}class="current-phase current-phase__red"{% endif %}>
                         {% if this.draft.redSideBans[i] is defined %}
-                            <img src="{{ lol_champion_square_image_url(this.draft.redSideBans[i].champion.lolId) }}" alt="image" width="64" height="64" class="grayscale-100" />
+                            <div class="ban">
+                                <img src="{{ lol_champion_square_image_url(this.draft.redSideBans[i].champion.lolId) }}" alt="image" width="64" height="64" class="grayscale-100" />
+                            </div>
                         {% else %}
                             <div class="w-[64px] h-[64px] bg-red-950"></div>
                         {% endif %}

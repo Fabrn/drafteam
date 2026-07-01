@@ -20,28 +20,28 @@ class Draft
      * @var list<DraftBan>
      */
     public array $blueSideBans {
-        get => $this->bans->filter(static fn (DraftBan $ban) => DraftSide::Blue === $ban->side)->getValues();
+        get => $this->bans->filter(static fn(DraftBan $ban) => DraftSide::Blue === $ban->side)->getValues();
     }
 
     /**
      * @var list<DraftBan>
      */
     public array $redSideBans {
-        get => $this->bans->filter(static fn (DraftBan $ban) => DraftSide::Red === $ban->side)->getValues();
+        get => $this->bans->filter(static fn(DraftBan $ban) => DraftSide::Red === $ban->side)->getValues();
     }
 
     /**
      * @var list<DraftPick>
      */
     public array $blueSidePicks {
-        get => $this->picks->filter(static fn (DraftPick $pick) => DraftSide::Blue === $pick->side)->getValues();
+        get => $this->picks->filter(static fn(DraftPick $pick) => DraftSide::Blue === $pick->side)->getValues();
     }
 
     /**
      * @var list<DraftPick>
      */
     public array $redSidePicks {
-        get => $this->picks->filter(static fn (DraftPick $pick) => DraftSide::Red === $pick->side)->getValues();
+        get => $this->picks->filter(static fn(DraftPick $pick) => DraftSide::Red === $pick->side)->getValues();
     }
 
     #[ORM\Id]
@@ -107,8 +107,11 @@ class Draft
 
     public function isChampionAvailable(Champion $champion): bool
     {
-        return $this->picks->filter(static fn (DraftPick $pick) => $pick->champion->id === $champion->id && !$pick->isTemporary)->isEmpty()
-            && $this->bans->filter(static fn (DraftBan $ban) => $ban->champion->id === $champion->id)->isEmpty()
-        ;
+        return (
+            $this->picks
+                ->filter(static fn(DraftPick $pick) => $pick->champion->id === $champion->id && !$pick->isTemporary)
+                ->isEmpty()
+            && $this->bans->filter(static fn(DraftBan $ban) => $ban->champion->id === $champion->id)->isEmpty()
+        );
     }
 }

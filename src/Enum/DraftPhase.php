@@ -15,7 +15,7 @@ enum DraftPhase: string
     case RedBan3 = 'red_ban_3';
     case RedBan4 = 'red_ban_4';
     case RedBan5 = 'red_ban_5';
-    
+
     // Picks
     case BluePick1 = 'blue_pick1';
     case BluePick2 = 'blue_pick2';

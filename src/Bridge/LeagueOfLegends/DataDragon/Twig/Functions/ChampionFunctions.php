@@ -14,7 +14,8 @@ final readonly class ChampionFunctions
     #[AsTwigFunction(name: 'lol_champion_square_image_url')]
     public function getSquareImageUrl(string $lolId): string
     {
-        return \sprintf('https://ddragon.leagueoflegends.com/cdn/%s/img/champion/%s.png',
+        return \sprintf(
+            'https://ddragon.leagueoflegends.com/cdn/%s/img/champion/%s.png',
             $this->dataDragonService->getLatestVersion(),
             $lolId,
         );

@@ -149,10 +149,10 @@ final class Draft
 
         // Transforms temporary pick or create a pick
         /** @var false|DraftPick $currentTempPick */
-        $currentTempPick = $this->draft->picks
-            ->filter(fn (DraftPick $pick) => $pick->isTemporary && $pick->side === $this->draft->phase->getSide())
-            ->first()
-        ;
+        $currentTempPick = $this->draft
+            ->picks
+            ->filter(fn(DraftPick $pick) => $pick->isTemporary && $pick->side === $this->draft->phase->getSide())
+            ->first();
 
         if (false !== $currentTempPick) {
             $currentTempPick->champion = $champion;
@@ -196,10 +196,10 @@ final class Draft
 
         // Replaces current temporary pick if exists, otherwise create a pick
         /** @var false|DraftPick $currentTempPick */
-        $currentTempPick = $this->draft->picks
-            ->filter(fn (DraftPick $pick) => $pick->isTemporary && $pick->side === $this->draft->phase->getSide())
-            ->first()
-        ;
+        $currentTempPick = $this->draft
+            ->picks
+            ->filter(fn(DraftPick $pick) => $pick->isTemporary && $pick->side === $this->draft->phase->getSide())
+            ->first();
 
         if (false !== $currentTempPick) {
             $currentTempPick->champion = $champion;

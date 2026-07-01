@@ -29,7 +29,6 @@ class ChampionDataRepository extends ServiceEntityRepository
             ->setParameter('name', '%' . \strtolower($name) . '%')
             ->setParameter('locale', $locale)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
 }

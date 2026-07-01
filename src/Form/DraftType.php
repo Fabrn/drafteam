@@ -20,30 +20,24 @@ final class DraftType extends AbstractType
             'required' => true,
             'label' => 'Name',
             'constraints' => [
-                new Length(
-                    max: 32,
-                ),
-            ]
+                new Length(max: 32),
+            ],
         ]);
 
         $builder->add('blueTeamName', TextType::class, [
             'required' => true,
             'label' => 'Blue team name',
             'constraints' => [
-                new Length(
-                    max: 32,
-                ),
-            ]
+                new Length(max: 32),
+            ],
         ]);
 
         $builder->add('redTeamName', TextType::class, [
             'required' => true,
             'label' => 'Red team name',
             'constraints' => [
-                new Length(
-                    max: 32,
-                ),
-            ]
+                new Length(max: 32),
+            ],
         ]);
 
         $builder->add('maxTimer', IntegerType::class, [
