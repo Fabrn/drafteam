@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/draft', name: 'draft_')]
+#[Route('/{_locale}/draft', name: 'draft_', requirements: ['_locale' => 'en|fr'], defaults: ['_locale' => 'en'])]
 class DraftController extends AbstractController
 {
     public function __construct(
