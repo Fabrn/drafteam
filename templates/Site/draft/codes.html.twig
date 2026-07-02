@@ -9,23 +9,23 @@
 {% endblock %}
 
 {% block body %}
-    <h1>Codes</h1>
+    <h1>{{ 'draft.create.codes.title' | trans }}</h1>
 
     <div>
-        <label for="blue_team_uuid">Blue team link</label>
+        <label for="blue_team_uuid">{{ 'draft.create.codes.blue' | trans }}</label>
         <input type="text" id="blue_team_uuid" name="blue_team_uuid" readonly
-               value="{{ absolute_url(path('draft_view', { identifier: draft.identifier, role: draft.blueTeamUuid })) }}" />
+               value="{{ absolute_url(path('draft_view', { identifier: draft.identifier, role: draft.blueTeamUuid, _locale: app.request.locale })) }}" />
     </div>
 
     <div>
-        <label for="red_team_uuid">Read team link</label>
+        <label for="red_team_uuid">{{ 'draft.create.codes.red' | trans }}</label>
         <input type="text" id="red_team_uuid" name="red_team_uuid" readonly
-               value="{{ absolute_url(path('draft_view', { identifier: draft.identifier, role: draft.redTeamUuid })) }}" />
+               value="{{ absolute_url(path('draft_view', { identifier: draft.identifier, role: draft.redTeamUuid, _locale: app.request.locale })) }}" />
     </div>
 
     <div>
-        <label for="spectator_uuid">Spectator link</label>
+        <label for="spectator_uuid">{{ 'draft.create.codes.spectator' | trans }}</label>
         <input type="text" id="spectator_uuid" name="spectator_uuid" readonly
-               value="{{ absolute_url(path('draft_view', { identifier: draft.identifier, role: draft.spectatorUuid })) }}" />
+               value="{{ absolute_url(path('draft_view', { identifier: draft.identifier, role: draft.spectatorUuid, _locale: app.request.locale })) }}" />
     </div>
 {% endblock %}

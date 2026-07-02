@@ -9,6 +9,7 @@ use App\Repository\DraftRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Order;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\Uid\Uuid;
@@ -79,6 +80,9 @@ class Draft
     #[ORM\Column(options: ['default' => DraftPhase::BlueBan1->value])]
     public DraftPhase $phase = DraftPhase::BlueBan1;
 
+    #[ORM\Column(type: Types::SIMPLE_ARRAY)]
+    public array $bannedLolIds = [];
+
     #[ORM\OrderBy(['position' => Order::Ascending->value])]
     #[ORM\OneToMany(targetEntity: DraftBan::class, mappedBy: 'draft', cascade: ['persist', 'remove'])]
     public Collection $bans;
@@ -112,6 +116,7 @@ class Draft
                 ->filter(static fn(DraftPick $pick) => $pick->champion->id === $champion->id && !$pick->isTemporary)
                 ->isEmpty()
             && $this->bans->filter(static fn(DraftBan $ban) => $ban->champion->id === $champion->id)->isEmpty()
+            && !\in_array($champion->lolKey, $this->bannedLolIds, strict: true)
         );
     }
 }

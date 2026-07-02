@@ -1,7 +1,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1>New draft</h1>
+    <div class="text-slate-200">
+        <h1>{{ 'draft.create.title' | trans }}</h1>
 
-    {{ form(form) }}
+        {{ form(form) }}
+    </div>
 {% endblock %}

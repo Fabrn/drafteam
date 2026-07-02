@@ -1,0 +1,8 @@
+draft:
+    create:
+        title: 'Créer une draft'
+        codes:
+            title: 'Codes'
+            blue: 'Lien équipe bleue'
+            red: 'Lien équipe rouge'
+            spectator: 'Lien spectateur'

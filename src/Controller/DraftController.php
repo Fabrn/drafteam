@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Champion;
 use App\Entity\Draft;
 use App\Enum\DraftStatus;
 use App\Form\DraftType;
@@ -45,6 +46,8 @@ class DraftController extends AbstractController
                 // Since ready checked is skipped, draft is already ongoing
                 $draft->status = DraftStatus::Ongoing;
             }
+
+            $draft->bannedLolIds = \array_map(static fn (Champion $c) => $c->lolKey, $form->get('bannedLolIds')->getData());
 
             $this->entityManager->persist($draft);
             $this->entityManager->flush();

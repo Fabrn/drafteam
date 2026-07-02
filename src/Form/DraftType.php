@@ -2,7 +2,9 @@
 
 namespace App\Form;
 
+use App\Entity\Champion;
 use App\Entity\Draft;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -44,6 +46,15 @@ final class DraftType extends AbstractType
             'required' => true,
             'label' => 'Max timer',
             'data' => 60,
+        ]);
+
+        $builder->add('bannedLolIds', EntityType::class, [
+            'required' => false,
+            'label' => 'Unavailable champions',
+            'class' => Champion::class,
+            'choice_value' => 'lolKey',
+            'choice_label' => 'lolId',
+            'multiple' => true,
         ]);
 
         $builder->add('isSandbox', CheckboxType::class, [
