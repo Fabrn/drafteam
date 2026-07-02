@@ -4,50 +4,62 @@
         <div class="fixed top-0 left-0 bg-violet-900/75 text-slate-200 backdrop-blur-md w-screen h-screen z-[100] flex items-center justify-center">
             {% if this.role == enum('App\\Enum\\DraftRole').RedDrafter %}
                 {% if this.draft.redTeamReadyChecked %}
-                    <p class="text-6xl font-bold">Waiting for ready check</p>
+                    <p class="text-6xl font-bold">{{ 'draft.ready_check.waiting' | trans }}</p>
                 {% else %}
                     <div class="text-center">
                         <h2 class="text-6xl font-bold mb-8">Ready check</h2>
-                        <p class="mb-16">Click this button once your team is ready.</p>
+                        <p class="mb-16">{{ 'draft.ready_check.text' | trans }}</p>
                         <button type="button" class="btn-ready-check bg-red-700 px-12 py-4 rounded-xl text-2xl font-bold cursor-pointer" {{ live_action('readyCheck') }}>
-                            Ready !
+                            {{ 'draft.ready_check.ready' | trans }}
                         </button>
                     </div>
                 {% endif %}
             {% elseif this.role == enum('App\\Enum\\DraftRole').BlueDrafter %}
                 {% if this.draft.blueTeamReadyChecked %}
-                    <p class="text-6xl font-bold">Waiting for ready check</p>
+                    <p class="text-6xl font-bold">{{ 'draft.ready_check.waiting' | trans }}</p>
                 {% else %}
                     <div class="text-center">
                         <h2 class="text-6xl font-bold mb-8">Ready check</h2>
-                        <p class="mb-16">Click this button once your team is ready.</p>
+                        <p class="mb-16">{{ 'draft.ready_check.text' | trans }}</p>
                         <button type="button" class="btn-ready-check bg-sky-500 px-12 py-4 rounded-xl text-2xl font-bold cursor-pointer" {{ live_action('readyCheck') }}>
-                            Ready !
+                            {{ 'draft.ready_check.ready' | trans }}
                         </button>
                     </div>
                 {% endif %}
             {% else %}
-                <p class="text-6xl font-bold">Waiting for ready check</p>
+                <p class="text-6xl font-bold">{{ 'draft.ready_check.waiting' | trans }}</p>
             {% endif %}
         </div>
     {% endif %}
 
     <header class="flex h-1/8 text-slate-200">
-        <div class="bg-sky-500 border-b-8 border-b-sky-900 w-1/4">
+        <div class="bg-sky-500 border-b-8 border-b-sky-900 w-1/4 flex items-end pb-6 px-12">
             <h2 class="text-2xl font-weight-bold">{{ this.draft.blueTeamName }}</h2>
         </div>
         <div class="w-1/2 flex">
             <div class="bg-slate-900 w-1/8 flex items-center justify-center">
-                <p class="text-6xl">{{ this.draft.maxTimer }}</p>
+                <p class="text-6xl">
+                    {% if this.draft.maxTimer %}
+                        {{ this.draft.maxTimer }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </p>
             </div>
             <div class="bg-slate-800 flex items-center justify-center w-6/8">
                 <h1 class="text-4xl font-weight-bold">{{ this.draft.name }}</h1>
             </div>
             <div class="bg-slate-900 w-1/8 flex items-center justify-center">
-                <p class="text-6xl">{{ this.draft.maxTimer }}</p>
+                <p class="text-6xl">
+                    {% if this.draft.maxTimer %}
+                        {{ this.draft.maxTimer }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </p>
             </div>
         </div>
-        <div class="bg-red-700 border-b-8 border-b-red-900 w-1/4">
+        <div class="bg-red-700 border-b-8 border-b-red-900 w-1/4 flex items-end justify-end pb-6 px-12">
             <h2 class="text-2xl font-weight-bold">{{ this.draft.redTeamName }}</h2>
         </div>
     </header>

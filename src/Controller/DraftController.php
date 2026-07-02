@@ -47,6 +47,11 @@ class DraftController extends AbstractController
                 $draft->status = DraftStatus::Ongoing;
             }
 
+            if (true === $form->get('disableTimer')->getData()) {
+                // Sets timer to 0 to disable it
+                $draft->maxTimer = 0;
+            }
+
             $draft->bannedLolIds = \array_map(static fn (Champion $c) => $c->lolKey, $form->get('bannedLolIds')->getData());
 
             $this->entityManager->persist($draft);

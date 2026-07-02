@@ -80,7 +80,7 @@ class Draft
     #[ORM\Column(options: ['default' => DraftPhase::BlueBan1->value])]
     public DraftPhase $phase = DraftPhase::BlueBan1;
 
-    #[ORM\Column(type: Types::SIMPLE_ARRAY)]
+    #[ORM\Column]
     public array $bannedLolIds = [];
 
     #[ORM\OrderBy(['position' => Order::Ascending->value])]

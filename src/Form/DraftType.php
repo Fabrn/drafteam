@@ -48,6 +48,11 @@ final class DraftType extends AbstractType
             'data' => 60,
         ]);
 
+        $builder->add('disableTimer', CheckboxType::class, [
+            'label' => 'Disable timer',
+            'mapped' => false,
+        ]);
+
         $builder->add('bannedLolIds', EntityType::class, [
             'required' => false,
             'label' => 'Unavailable champions',

@@ -20,7 +20,7 @@ final class Version20260702091745 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE draft ADD banned_lol_ids TEXT NOT NULL DEFAULT \'\'');
+        $this->addSql('ALTER TABLE draft ADD banned_lol_ids JSON');
     }
 
     public function down(Schema $schema): void

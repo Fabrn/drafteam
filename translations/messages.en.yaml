@@ -6,3 +6,7 @@ draft:
             blue: 'Blue team link'
             red: 'Read team link'
             spectator: 'Spectator link'
+    ready_check:
+        text: 'Click this button once your team is ready.'
+        waiting: 'Waiting for ready check'
+        ready: 'Ready !'

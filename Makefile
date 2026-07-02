@@ -67,6 +67,12 @@ migration: ## Generates a migration
 migrate: ## Executes migrations
 	@$(SYMFONY) doctrine:migrations:migrate
 
+reset-database: ## Deletes then recreates, then executes migrations
+	@$(SYMFONY) doctrine:database:drop --force --no-interaction
+	@$(SYMFONY) doctrine:database:create
+	@$(SYMFONY) doctrine:migrations:migrate --no-interaction
+	@$(SYMFONY) app:champions:update
+
 ## —— Custom commands ———————————————————————————————————————————————————————————————
 update-champions:
 	@$(SYMFONY) app:champions:update
