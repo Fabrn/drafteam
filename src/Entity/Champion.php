@@ -19,16 +19,8 @@ class Champion
         #[ORM\Column(length: 3)]
         public string $lolKey,
         #[ORM\Column(length: 255)]
-        public string $imageFull,
+        public string $imageSquarePath,
         #[ORM\Column(length: 255)]
-        public string $imageSprite,
-        #[ORM\Column]
-        public int $imageX,
-        #[ORM\Column]
-        public int $imageY,
-        #[ORM\Column]
-        public int $imageWidth,
-        #[ORM\Column]
-        public int $imageHeight,
+        public string $imageSplashPath,
     ) {}
 }

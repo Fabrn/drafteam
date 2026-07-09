@@ -51,6 +51,7 @@ final class DraftType extends AbstractType
         $builder->add('disableTimer', CheckboxType::class, [
             'label' => 'Disable timer',
             'mapped' => false,
+            'required' => false,
         ]);
 
         $builder->add('bannedLolIds', EntityType::class, [

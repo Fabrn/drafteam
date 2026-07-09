@@ -67,7 +67,7 @@ migration: ## Generates a migration
 migrate: ## Executes migrations
 	@$(SYMFONY) doctrine:migrations:migrate
 
-reset-database: ## Deletes then recreates, then executes migrations
+reset-database: up ## Deletes then recreates, then executes migrations
 	@$(SYMFONY) doctrine:database:drop --force --no-interaction
 	@$(SYMFONY) doctrine:database:create
 	@$(SYMFONY) doctrine:migrations:migrate --no-interaction

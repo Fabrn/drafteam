@@ -12,27 +12,25 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Contracts\Cache\CacheInterface;
-use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\Filesystem\Filesystem;
 
 #[AsCommand(name: 'app:champions:update', description: 'Updates list of champions and their data in the database.')]
 final readonly class UpdateChampionsCommand
 {
     public function __construct(
         private DataDragonService $dataDragonService,
-        private CacheInterface $cache,
         private ChampionRepository $championRepository,
         private ChampionDataRepository $championDataRepository,
         private EntityManagerInterface $entityManager,
+        #[Autowire(param: 'kernel.project_dir')]
+        private string $projectDir,
     ) {}
 
     public function __invoke(SymfonyStyle $io, #[Option] string $lang = 'en_US'): int
     {
-        $latestVersion = $this->cache->get('league_of_legends.data_dragon.last_version', function (ItemInterface $item) {
-            $item->expiresAfter(86400);
-
-            return $this->dataDragonService->getLatestVersion();
-        });
+        $fs = new Filesystem();
+        $latestVersion = $this->dataDragonService->getLatestVersion();
 
         $io->note('Dernière version du jeu : ' . $latestVersion);
 
@@ -58,16 +56,32 @@ final readonly class UpdateChampionsCommand
             if (null === $existingChampion) {
                 $progressBar->setMessage(\sprintf('%s - Creating champion for language "%s".', $champion->id, $lang));
 
+                // Champion's square image
+                $squareUrl = \sprintf(
+                    'https://ddragon.leagueoflegends.com/cdn/%s/img/champion/%s.png',
+                    $latestVersion,
+                    $champion->id,
+                );
+
+                $dbSquarePath = '/images/champions/squares/' . $champion->key . '.png';
+                $squarePath = $this->projectDir . '/public' . $dbSquarePath;
+
+                $fs->dumpFile($squarePath, \file_get_contents($squareUrl));
+
+                // Champion's splash art image
+                $splashUrl = \sprintf('https://ddragon.leagueoflegends.com/cdn/img/champion/splash/%s_0.jpg', $champion->id);
+
+                $dbSplashPath = '/images/champions/splash_arts/' . $champion->key . '.png';
+                $splashPath = $this->projectDir . '/public' . $dbSplashPath;
+
+                $fs->dumpFile($splashPath, \file_get_contents($splashUrl));
+
                 $this->entityManager->persist(
                     $c = new Champion(
                         lolId: $champion->id,
                         lolKey: $champion->key,
-                        imageFull: $champion->image->full,
-                        imageSprite: $champion->image->sprite,
-                        imageX: $champion->image->x,
-                        imageY: $champion->image->y,
-                        imageWidth: $champion->image->w,
-                        imageHeight: $champion->image->h,
+                        imageSquarePath: $dbSquarePath,
+                        imageSplashPath: $dbSplashPath,
                     ),
                 );
 

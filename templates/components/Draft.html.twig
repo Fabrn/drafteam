@@ -71,7 +71,7 @@
                     <div class="w-full h-full {{ this.draft.phase.pickPhaseForSide(enum('App\\Enum\\DraftSide').Blue, i + 1) ? 'current-phase current-phase__blue' : '' }}">
                         <div class="player-window player-window__blue relative h-full w-full">
                             {% if this.draft.blueSidePicks[i] is defined %}
-                                <img src="{{ lol_champion_splash_image_url(this.draft.blueSidePicks[i].champion.lolId) }}" alt="image" class="w-full h-full object-cover object-[25%_15%]" />
+                                <img src="{{ asset(this.draft.blueSidePicks[i].champion.imageSplashPath) }}" alt="image" class="w-full h-full object-cover object-[25%_15%]" />
                             {% else %}
                                 <div class="w-full h-full bg-none player-window__placeholder"></div>
                             {% endif %}
@@ -104,7 +104,7 @@
                                    {% if not this.draft.championAvailable(champion.champion) or this.draftSide !== this.draft.phase.side %}disabled{% endif %}
                                     class="hidden" />
                         {% endif %}
-                        <img src="{{ lol_champion_square_image_url(champion.champion.lolId) }}" alt="{{ champion.name }}'s image" width="96" height="96" />
+                        <img src="{{ asset(champion.champion.imageSquarePath) }}" alt="{{ champion.name }}'s image" width="96" height="96" />
                     </label>
                 {% endfor %}
             </div>
@@ -116,7 +116,7 @@
                     <div class="w-full h-full {{ this.draft.phase.pickPhaseForSide(enum('App\\Enum\\DraftSide').Red, i + 1) ? 'current-phase current-phase__red' : '' }}">
                         <div class="player-window player-window__red relative h-full w-full">
                             {% if this.draft.redSidePicks[i] is defined %}
-                                <img src="{{ lol_champion_splash_image_url(this.draft.redSidePicks[i].champion.lolId) }}" alt="image" class="w-full h-full object-cover object-[25%_15%]" />
+                                <img src="{{ asset(this.draft.redSidePicks[i].champion.imageSplashPath) }}" alt="image" class="w-full h-full object-cover object-[25%_15%]" />
                             {% else %}
                                 <div class="w-full h-full bg-none player-window__placeholder"></div>
                             {% endif %}
@@ -137,7 +137,7 @@
                     <div {% if this.draft.phase.banPhaseForSide(enum('App\\Enum\\DraftSide').Blue, i + 1) %}class="current-phase current-phase__blue"{% endif %}>
                         {% if this.draft.blueSideBans[i] is defined %}
                             <div class="ban">
-                                <img src="{{ lol_champion_square_image_url(this.draft.blueSideBans[i].champion.lolId) }}" alt="image" width="64" height="64" class="grayscale-100" />
+                                <img src="{{ asset(this.draft.blueSideBans[i].champion.imageSquarePath) }}" alt="image" width="64" height="64" class="grayscale-100" />
                             </div>
                         {% else %}
                             <div class="w-[64px] h-[64px] bg-sky-950"></div>
@@ -174,7 +174,7 @@
                     <div {% if this.draft.phase.banPhaseForSide(enum('App\\Enum\\DraftSide').Red, i + 1) %}class="current-phase current-phase__red"{% endif %}>
                         {% if this.draft.redSideBans[i] is defined %}
                             <div class="ban">
-                                <img src="{{ lol_champion_square_image_url(this.draft.redSideBans[i].champion.lolId) }}" alt="image" width="64" height="64" class="grayscale-100" />
+                                <img src="{{ asset(this.draft.redSideBans[i].champion.imageSquarePath) }}" alt="image" width="64" height="64" class="grayscale-100" />
                             </div>
                         {% else %}
                             <div class="w-[64px] h-[64px] bg-red-950"></div>
