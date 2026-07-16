@@ -6,6 +6,27 @@ draft:
             blue: 'Blue team link'
             red: 'Read team link'
             spectator: 'Spectator link'
+        form:
+            name: 'Name'
+            blue_team_name: 'Blue team name'
+            red_team_name: 'Red team name'
+            max_timer: 'Max timer'
+            disable_timer: 'Disable timer'
+            unavailable_champions: 'Unavailable champions'
+            sandbox: 'Enable sandbox mode'
+            submit: 'Create lobby'
+        sections:
+            informations:
+                title: 'Informations'
+                text: 'What is the match about ?'
+            timer:
+                title: 'Timer'
+                text: 'Define the timer for banning and picking phases'
+            unavailable_champions:
+                text: 'Disable champions for every actor of the draft'
+            sandbox:
+                title: 'Sandbox mode'
+                text: 'Sandbox mode allows you to freely control picks and bans without waiting for the usual phases'
     ready_check:
         text: 'Click this button once your team is ready.'
         waiting: 'Waiting for ready check'

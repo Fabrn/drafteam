@@ -6,6 +6,27 @@ draft:
             blue: 'Lien équipe bleue'
             red: 'Lien équipe rouge'
             spectator: 'Lien spectateur'
+        form:
+            name: 'Nom'
+            blue_team_name: 'Nom de l''équipe bleue'
+            red_team_name: 'Nom de l''équipe rouge'
+            max_timer: 'Chrono max'
+            disable_timer: 'Désactiver le chrono'
+            unavailable_champions: 'Champions désactivés'
+            sandbox: 'Activer le mode bac à sable'
+            submit: 'Créer la draft'
+        sections:
+            informations:
+                title: 'Informations'
+                text: 'À propos du match'
+            timer:
+                title: 'Chrono'
+                text: 'Défini le chrono max pour les phases de pick et ban'
+            unavailable_champions:
+                text: 'Désactive une liste de champions pour chaque acteur de la draft'
+            sandbox:
+                title: 'Mode bac à sable'
+                text: 'Le mode bac à sable permet de librement attribuer/retirer des picks et ban aux joueurs sans attendre l''ordre habituel'
     ready_check:
         text: 'Cliquez sur ce bouton une fois que votre équipe est prête.'
         waiting: 'En attente du ready check'

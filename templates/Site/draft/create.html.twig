@@ -1,9 +1,96 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="text-slate-200">
-        <h1>{{ 'draft.create.title' | trans }}</h1>
+    <h1 class="text-primary text-4xl mb-8">{{ 'draft.create.title' | trans }}</h1>
 
-        {{ form(form) }}
+    {{ form_start(form) }}
+
+    <section class="grid grid-cols-[450px_1fr] gap-8">
+        <div>
+            <h3 class="mb-2">{{ 'draft.create.sections.sandbox.title' | trans }}</h3>
+            <p class="opacity-70 text-sm">{{ 'draft.create.sections.sandbox.text' | trans }}</p>
+        </div>
+        <div class="flex items-center gap-4 mb-8">
+            <div class="toggle">
+                {{ form_widget(form.isSandbox) }}
+                <label></label>
+            </div>
+            {{ form_label(form.isSandbox) }}
+        </div>
+    </section>
+
+    <hr />
+
+    <section class="grid grid-cols-[450px_1fr] gap-8">
+        <div>
+            <h3 class="mb-2">{{ 'draft.create.sections.informations.title' | trans }}</h3>
+            <p class="opacity-70 text-sm">{{ 'draft.create.sections.informations.text' | trans }}</p>
+        </div>
+        <div>
+            <div class="form-group mb-8">
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name, { attr: { 'data-form-type': 'other' }}) }}
+            </div>
+
+            <div class="grid grid-cols-2 gap-8">
+                <div class="form-group">
+                    {{ form_label(form.blueTeamName) }}
+                    {{ form_widget(form.blueTeamName, { attr: { 'data-form-type': 'other' }}) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(form.redTeamName) }}
+                    {{ form_widget(form.redTeamName, { attr: { 'data-form-type': 'other' }}) }}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr />
+
+    <section class="grid grid-cols-[450px_1fr] gap-8">
+        <div>
+            <h3 class="mb-2">{{ 'draft.create.sections.timer.title' | trans }}</h3>
+            <p class="opacity-70 text-sm">{{ 'draft.create.sections.timer.text' | trans }}</p>
+        </div>
+        <div class="flex items-center gap-8 divide-x">
+            <div class="flex items-center gap-4 pr-8">
+                <div class="toggle">
+                    {{ form_widget(form.disableTimer) }}
+                    <label></label>
+                </div>
+                {{ form_label(form.disableTimer) }}
+            </div>
+
+            <div class="form-group flex-grow">
+                <div class="flex items-center gap-4">
+                    {{ form_label(form.maxTimer) }}
+                    {{ form_widget(form.maxTimer) }}
+                    <p>seconds</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr />
+
+    <section class="grid grid-cols-[450px_1fr] gap-8">
+        <div>
+            <h3 class="mb-2">{{ form_label(form.bannedLolIds) }}</h3>
+            <p class="opacity-70 text-sm">{{ 'draft.create.sections.unavailable_champions.text' | trans }}</p>
+        </div>
+        <div>
+            <button type="button" class="btn btn-primary">Open champion grid</button>
+            <div class="hidden">
+                {{ form_widget(form.bannedLolIds) }}
+            </div>
+        </div>
+    </section>
+
+    <hr />
+
+    <div class="mt-8">
+        {{ form_widget(form.submit, { attr: { class: 'btn btn-primary' } }) }}
     </div>
+
+    {{ form_end(form) }}
 {% endblock %}

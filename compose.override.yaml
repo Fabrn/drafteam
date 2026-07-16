@@ -6,6 +6,9 @@ services:
     build:
       context: .
       target: frankenphp_dev
+    depends_on:
+      database:
+        condition: service_healthy
     volumes:
       - ./:/app
       - ./frankenphp/Caddyfile:/etc/frankenphp/Caddyfile:ro
