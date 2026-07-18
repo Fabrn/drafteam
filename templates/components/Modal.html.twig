@@ -1,0 +1,26 @@
+<div class="fixed z-[100] top-0 left-0 bg-backgrond/50 backdrop-blur h-screen max-h-screen overflow-hidden w-screen flex items-center justify-center aria-hidden:opacity-0 aria-hidden:pointer-events-none transition-opacity"
+    aria-hidden="true" id="{{ id }}">
+    <div class="w-2/3 rounded-xl shadow-2xl bg-violet-900 max-h-5/6 overflow-hidden relative pb-8">
+        <div class="sticky top-0 bg-violet-900 p-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2>{{ title }}</h2>
+                    <p class="opacity-70 text-sm">{{ text }}</p>
+                </div>
+                <button type="button" class="cursor-pointer" title="{{ 'draft.create.sections.unavailable_champions.modal.close' | trans }}"
+                    onclick="document.getElementById('{{ id }}').setAttribute('aria-hidden', 'true');" aria-controls="{{ id }}">
+                    <twig:Icons:Close />
+                </button>
+            </div>
+            {% block header %}{% endblock %}
+        </div>
+
+        <div class="px-8 py-2 overflow-y-auto scrollbar-none max-h-[500px]">
+            {% block content %}{% endblock %}
+        </div>
+
+        <div class="flex items-center justify-end gap-4 px-8 pt-8">
+            {% block footer %}{% endblock %}
+        </div>
+    </div>
+</div>

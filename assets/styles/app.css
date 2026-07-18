@@ -14,6 +14,10 @@ body {
     color: var(--color-slate-100);
 }
 
+h1 {
+    @apply text-primary text-4xl mb-8;
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-weight: bold;
 }

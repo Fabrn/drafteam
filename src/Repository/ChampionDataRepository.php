@@ -6,14 +6,19 @@ use App\Entity\ChampionData;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\Order;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @extends ServiceEntityRepository<ChampionData>
  */
 class ChampionDataRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
+    public function __construct(
+        ManagerRegistry $registry,
+        #[Autowire(param: 'app.locales')]
+        private readonly string $locales,
+    ) {
         parent::__construct($registry, ChampionData::class);
     }
 
@@ -30,5 +35,26 @@ class ChampionDataRepository extends ServiceEntityRepository
             ->setParameter('locale', $locale)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @return list<ChampionData>
+     */
+    public function findByRequestLanguage(Request $request): array
+    {
+        $locales = \explode('|', $this->locales);
+        $data = $this->findBy(
+            criteria: ['language' => $request->getPreferredLanguage($locales)],
+            orderBy: ['name' => 'ASC'],
+        );
+
+        if ([] === $data) {
+            $data = $this->findBy(
+                criteria: ['language' => 'en_US'],
+                orderBy: ['name' => 'ASC'],
+            );
+        }
+
+        return $data;
     }
 }

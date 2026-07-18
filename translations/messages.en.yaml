@@ -24,6 +24,15 @@ draft:
                 text: 'Define the timer for banning and picking phases'
             unavailable_champions:
                 text: 'Disable champions for every actor of the draft'
+                grid_button: 'Open champions grid'
+                modal:
+                    title: 'Unavailable champions'
+                    text: 'Select a list of champions that will be unavailable automatically for every actor of the draft'
+                    close: 'Close'
+                    champion_tooltip: 'Make champion_name unavailable'
+                    search: 'Search'
+                    confirm: 'Confirm'
+                    cancel: 'Cancel'
             sandbox:
                 title: 'Sandbox mode'
                 text: 'Sandbox mode allows you to freely control picks and bans without waiting for the usual phases'

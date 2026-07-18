@@ -24,6 +24,15 @@ draft:
                 text: 'Défini le chrono max pour les phases de pick et ban'
             unavailable_champions:
                 text: 'Désactive une liste de champions pour chaque acteur de la draft'
+                grid_button: 'Ouvrir la grille des champions'
+                modal:
+                    title: 'Champions indisponibles'
+                    text: 'Sélectionnez une liste de champions à rendre automatiquement indisponibles à tous les participants de la draft'
+                    close: 'Fermer'
+                    champion_tooltip: 'Rendre champion_name indisponible'
+                    search: 'Rechercher'
+                    confirm: 'Valider'
+                    cancel: 'Annuler'
             sandbox:
                 title: 'Mode bac à sable'
                 text: 'Le mode bac à sable permet de librement attribuer/retirer des picks et ban aux joueurs sans attendre l''ordre habituel'

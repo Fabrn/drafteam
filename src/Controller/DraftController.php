@@ -6,6 +6,7 @@ use App\Entity\Champion;
 use App\Entity\Draft;
 use App\Enum\DraftStatus;
 use App\Form\DraftType;
+use App\Repository\ChampionDataRepository;
 use App\Repository\ChampionRepository;
 use App\ValueObject\DraftWithRole;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,7 +24,7 @@ class DraftController extends AbstractController
     ) {}
 
     #[Route('/create', name: 'create')]
-    public function create(Request $request): Response
+    public function create(Request $request, ChampionDataRepository $championDataRepository): Response
     {
         $draft = new Draft(
             name: '',
@@ -64,6 +65,7 @@ class DraftController extends AbstractController
 
         return $this->render('Site/draft/create.html.twig', [
             'form' => $form->createView(),
+            'champions' => $championDataRepository->findByRequestLanguage($request),
         ]);
     }
 

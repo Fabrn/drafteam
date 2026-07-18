@@ -1,7 +1,51 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        [name="unavailable_champion"]:checked + label > img {
+            filter: grayscale(100%);
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('unavailable_champion_search').addEventListener('keyup', function () {
+                const search = this.value;
+                const items = document.querySelectorAll('[data-champion-name]');
+
+                if ('' === search) {
+                    items.forEach(item => {
+                        item.classList.remove('hidden');
+                    });
+                } else {
+                    items.forEach(item => {
+                        if (!item.getAttribute('data-champion-name').toLowerCase().includes(search.toLowerCase())) {
+                            item.classList.add('hidden');
+                        }
+                    })
+                }
+            });
+
+            document.getElementById('btn-champion-grid-validate').addEventListener('click', function () {
+                const selectedChampions = [...document.querySelectorAll('[name="unavailable_champion"]:checked')].map(item => item.value);
+                const select = document.getElementById('draft_bannedLolIds');
+
+                select.querySelectorAll('option').forEach(option => {
+                    option.selected = selectedChampions.includes(option.value);
+                })
+
+                document.getElementById('modal-champion-grid').setAttribute('aria-hidden', 'true');
+            });
+        });
+    </script>
+{% endblock %}
+
 {% block body %}
-    <h1 class="text-primary text-4xl mb-8">{{ 'draft.create.title' | trans }}</h1>
+    <h1>{{ 'draft.create.title' | trans }}</h1>
 
     {{ form_start(form) }}
 
@@ -52,7 +96,7 @@
             <h3 class="mb-2">{{ 'draft.create.sections.timer.title' | trans }}</h3>
             <p class="opacity-70 text-sm">{{ 'draft.create.sections.timer.text' | trans }}</p>
         </div>
-        <div class="flex items-center gap-8 divide-x">
+        <div class="flex items-center gap-8 divide-x divide-violet-300/20">
             <div class="flex items-center gap-4 pr-8">
                 <div class="toggle">
                     {{ form_widget(form.disableTimer) }}
@@ -65,7 +109,6 @@
                 <div class="flex items-center gap-4">
                     {{ form_label(form.maxTimer) }}
                     {{ form_widget(form.maxTimer) }}
-                    <p>seconds</p>
                 </div>
             </div>
         </div>
@@ -79,7 +122,9 @@
             <p class="opacity-70 text-sm">{{ 'draft.create.sections.unavailable_champions.text' | trans }}</p>
         </div>
         <div>
-            <button type="button" class="btn btn-primary">Open champion grid</button>
+            <button type="button" class="btn btn-primary" onclick="document.getElementById('modal-champion-grid').setAttribute('aria-hidden', 'false')">
+                {{ 'draft.create.sections.unavailable_champions.grid_button' | trans }}
+            </button>
             <div class="hidden">
                 {{ form_widget(form.bannedLolIds) }}
             </div>
@@ -93,4 +138,45 @@
     </div>
 
     {{ form_end(form) }}
+
+    {# Modal #}
+    <twig:Modal
+        id="modal-champion-grid"
+        title="{{ 'draft.create.sections.unavailable_champions.modal.title' | trans }}"
+        text="{{ 'draft.create.sections.unavailable_champions.modal.text' | trans }}"
+    >
+        <twig:block name="header">
+            <div class="pt-4">
+                <input type="search" id="unavailable_champion_search" name="unavailable_champion_search"
+                       class="bg-slate-200 rounded p-2 outline-none text-background w-full text-sm"
+                       placeholder="{{ 'draft.create.sections.unavailable_champions.modal.search' | trans }}" />
+            </div>
+        </twig:block>
+        <div class="grid grid-cols-4">
+            {% for champion in champions %}
+                <div class="relative" data-champion-name="{{ champion.name }}">
+                    <input type="checkbox" id="unavailable_champion_{{ champion.champion.lolKey }}" name="unavailable_champion" class="hidden"
+                        value="{{ champion.champion.lolKey }}" />
+                    <label for="unavailable_champion_{{ champion.champion.lolKey }}"
+                           class="block h-full w-full cursor-pointer"
+                           title="{{ 'draft.create.sections.unavailable_champions.modal.champion_tooltip' | trans({ champion_name: champion.name }) }}">
+                        <img src="{{ asset(champion.champion.imageSplashPath) }}" alt="{{ champion.name }}'s splash art" />
+                    </label>
+                    <div class="absolute bottom-0 left-O w-full h-1/2 bg-linear-to-t from-slate-900 from-20% to-slate-900/0 to-90% flex items-end pointer-events-none">
+                        <p class="px-4 py-2">{{ champion.name }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <twig:block name="footer">
+            <button type="button" class="btn btn-primary w-[150px]" id="btn-champion-grid-validate">
+                {{ 'draft.create.sections.unavailable_champions.modal.confirm' | trans }}
+            </button>
+            <button type="button" class="btn w-[150px]"
+                    onclick="document.getElementById('modal-champion-grid').setAttribute('aria-hidden', 'true');"
+                    aria-controls="modal-champion-grid">
+                {{ 'draft.create.sections.unavailable_champions.modal.cancel' | trans }}
+            </button>
+        </twig:block>
+    </twig:Modal>
 {% endblock %}

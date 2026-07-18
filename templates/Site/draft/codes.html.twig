@@ -11,20 +11,24 @@
 {% block body %}
     <h1>{{ 'draft.create.codes.title' | trans }}</h1>
 
-    <div>
-        <label for="blue_team_uuid">{{ 'draft.create.codes.blue' | trans }}</label>
+    <div class="form-group mb-8">
+        <h2 class="mb-1">{{ 'draft.create.codes.blue' | trans }}</h2>
+        <p class="opacity-80 text-sm mb-4">Donnez ce lien à la personne qui va gérer la draft pour l'équipe bleue.</p>
+
         <input type="text" id="blue_team_uuid" name="blue_team_uuid" readonly
                value="{{ absolute_url(path('draft_view', { identifier: draft.identifier, role: draft.blueTeamUuid, _locale: app.request.locale })) }}" />
     </div>
 
-    <div>
-        <label for="red_team_uuid">{{ 'draft.create.codes.red' | trans }}</label>
+    <div class="form-group mb-8">
+        <h2 class="mb-1">{{ 'draft.create.codes.red' | trans }}</h2>
+        <p class="opacity-80 text-sm mb-4">Donnez ce lien à la personne qui va gérer la draft pour l'équipe rouge.</p>
         <input type="text" id="red_team_uuid" name="red_team_uuid" readonly
                value="{{ absolute_url(path('draft_view', { identifier: draft.identifier, role: draft.redTeamUuid, _locale: app.request.locale })) }}" />
     </div>
 
-    <div>
-        <label for="spectator_uuid">{{ 'draft.create.codes.spectator' | trans }}</label>
+    <div class="form-group">
+        <h2 class="mb-1">{{ 'draft.create.codes.spectator' | trans }}</h2>
+        <p class="opacity-80 text-sm mb-4">Donnez ce lien aux personnes assistant à la draft.</p>
         <input type="text" id="spectator_uuid" name="spectator_uuid" readonly
                value="{{ absolute_url(path('draft_view', { identifier: draft.identifier, role: draft.spectatorUuid, _locale: app.request.locale })) }}" />
     </div>
