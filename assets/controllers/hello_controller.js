@@ -37,46 +37,54 @@ export default class extends Controller {
             });
         });
 
-        document.querySelectorAll('[class^="champion_grid_item"]').forEach(draggable => {
-            draggable.addEventListener('dragstart', function (e) {
-                e.dataTransfer.setData('text/plain', draggable.getAttribute('data-id'));
-            });
-        });
+        const draggables = document.querySelectorAll('[class^="champion_grid_item"][draggable="true"]');
 
-        document.querySelectorAll('[data-drop-action]').forEach(container => {
-            container.addEventListener('dragover', function (e) {
-                e.preventDefault();
-            });
-
-            container.addEventListener('drop', function (e) {
-                e.preventDefault();
-
-                const championId = Number.parseInt(e.dataTransfer.getData('text/plain'));
-
-                _this.component.action('choose', {
-                    championId,
-                    action: container.getAttribute('data-drop-action'),
-                    side: container.getAttribute('data-drop-side'),
-                    index: container.getAttribute('data-drop-index'),
+        if (draggables.length > 0) {
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', function (e) {
+                    e.dataTransfer.setData('text/plain', draggable.getAttribute('data-id'));
                 });
             });
 
-            container.addEventListener('contextmenu', function (e) {
-                e.preventDefault();
+            document.querySelectorAll('[data-drop-action]').forEach(container => {
+                container.addEventListener('dragover', function (e) {
+                    e.preventDefault();
+                });
 
-                const dropzone = e.target.closest('[data-drop-action]');
+                container.addEventListener('drop', function (e) {
+                    e.preventDefault();
 
-                if (!dropzone) {
-                    return;
-                }
+                    const championId = Number.parseInt(e.dataTransfer.getData('text/plain'));
 
-                _this.component.action('remove', {
-                    action: dropzone.getAttribute('data-drop-action'),
-                    side: dropzone.getAttribute('data-drop-side'),
-                    index: dropzone.getAttribute('data-drop-index'),
+                    if (Number.isNaN(championId) || 0 === championId) {
+                        return;
+                    }
+
+                    _this.component.action('choose', {
+                        championId,
+                        action: container.getAttribute('data-drop-action'),
+                        side: container.getAttribute('data-drop-side'),
+                        index: container.getAttribute('data-drop-index'),
+                    });
+                });
+
+                container.addEventListener('contextmenu', function (e) {
+                    e.preventDefault();
+
+                    const dropzone = e.target.closest('[data-drop-action]');
+
+                    if (!dropzone) {
+                        return;
+                    }
+
+                    _this.component.action('remove', {
+                        action: dropzone.getAttribute('data-drop-action'),
+                        side: dropzone.getAttribute('data-drop-side'),
+                        index: dropzone.getAttribute('data-drop-index'),
+                    });
                 });
             });
-        })
+        }
     }
 
     connect() {
