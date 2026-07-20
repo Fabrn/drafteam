@@ -37,27 +37,36 @@
             <h2 class="text-2xl font-weight-bold">{{ this.draft.blueTeamName }}</h2>
         </div>
         <div class="w-1/2 flex">
-            <div class="bg-slate-900 w-1/8 flex items-center justify-center">
-                <p class="text-6xl">
-                    {% if this.draft.maxTimer %}
-                        {{ this.draft.maxTimer }}
-                    {% else %}
-                        -
-                    {% endif %}
-                </p>
-            </div>
-            <div class="bg-slate-800 flex items-center justify-center w-6/8">
-                <h1 class="text-4xl font-weight-bold">{{ this.draft.name }}</h1>
-            </div>
-            <div class="bg-slate-900 w-1/8 flex items-center justify-center">
-                <p class="text-6xl">
-                    {% if this.draft.maxTimer %}
-                        {{ this.draft.maxTimer }}
-                    {% else %}
-                        -
-                    {% endif %}
-                </p>
-            </div>
+            {% if this.draft.isSandbox %}
+                <div class="bg-slate-800 flex items-center justify-center w-full">
+                    <div class="text-center">
+                        <h2 class="text-4xl font-weight-bold">{{ this.draft.name }}</h2>
+                        <p class="opacity-70 text-sm">🛠️ {{ 'draft.overlay.sandbox_mode' | trans }} 🛠️</p>
+                    </div>
+                </div>
+            {% else %}
+                <div class="bg-slate-900 w-1/8 flex items-center justify-center">
+                    <p class="text-6xl">
+                        {% if this.draft.maxTimer %}
+                            {{ this.draft.maxTimer }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="bg-slate-800 flex items-center justify-center w-6/8">
+                    <h2 class="text-4xl font-weight-bold">{{ this.draft.name }}</h2>
+                </div>
+                <div class="bg-slate-900 w-1/8 flex items-center justify-center">
+                    <p class="text-6xl">
+                        {% if this.draft.maxTimer %}
+                            {{ this.draft.maxTimer }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </p>
+                </div>
+            {% endif %}
         </div>
         <div class="bg-red-700 border-b-8 border-b-red-900 w-1/4 flex items-end justify-end pb-6 px-12">
             <h2 class="text-2xl font-weight-bold">{{ this.draft.redTeamName }}</h2>
@@ -66,17 +75,21 @@
     <main class="flex h-6/8">
         {# Blue side players #}
         <aside class="w-1/4 bg-slate-800 h-full">
-            {% for i in 0..4 %}
+            {% for i in 1..5 %}
                 <div class="h-1/5">
-                    <div class="w-full h-full {{ this.draft.phase.pickPhaseForSide(enum('App\\Enum\\DraftSide').Blue, i + 1) ? 'current-phase current-phase__blue' : '' }}">
-                        <div class="player-window player-window__blue relative h-full w-full">
+                    <div class="w-full h-full {{ not this.draft.isSandbox and this.draft.phase.pickPhaseForSide(enum('App\\Enum\\DraftSide').Blue, i) ? 'current-phase current-phase__blue' : '' }}">
+                        <div class="player-window player-window__blue relative h-full w-full"
+                             data-drop-action="{{ enum('App\\Enum\\DraftAction').Pick.value }}"
+                             data-drop-side="{{ enum('App\\Enum\\DraftSide').Blue.value }}"
+                             data-drop-index="{{ i }}"
+                        >
                             {% if this.draft.blueSidePicks[i] is defined %}
                                 <img src="{{ asset(this.draft.blueSidePicks[i].champion.imageSplashPath) }}" alt="image" class="w-full h-full object-cover object-[25%_15%]" />
                             {% else %}
                                 <div class="w-full h-full bg-none player-window__placeholder"></div>
                             {% endif %}
                             <div class="player-window__inner absolute top-0 left-0 z-[10] w-full h-full bg-slate-800/25 text-slate-200 uppercase p-8">
-                                <p>Player {{ i + 1 }}</p>
+                                <p>Player {{ i }}</p>
                             </div>
                         </div>
                     </div>
@@ -98,30 +111,40 @@
             {# Grid #}
             <div class="flex flex-wrap justify-between gap-4 overflow-auto max-h-full px-4 pb-20 scrollbar-none">
                 {% for champion in this.champions %}
-                    <label for="champion_grid_item_{{ champion.champion.lolKey }}" class="cursor-pointer">
-                        {% if this.role != enum('App\\Enum\\DraftRole').Spectator %}
-                            <input type="radio" name="champion_grid_item" id="champion_grid_item_{{ champion.champion.lolKey }}" value="{{ champion.champion.id }}"
-                                   {% if not this.draft.championAvailable(champion.champion) or this.draftSide !== this.draft.phase.side %}disabled{% endif %}
-                                    class="hidden" />
-                        {% endif %}
-                        <img src="{{ asset(champion.champion.imageSquarePath) }}" alt="{{ champion.name }}'s image" width="96" height="96" />
-                    </label>
+                    {% if this.draft.isSandbox %}
+                        <div class="champion_grid_item_{{ champion.champion.lolKey }} cursor-grab" draggable="true" data-id="{{ champion.champion.id }}">
+                            <img src="{{ asset(champion.champion.imageSquarePath) }}" alt="{{ champion.name }}'s image" width="96" height="96" />
+                        </div>
+                    {% else %}
+                        <label for="champion_grid_item_{{ champion.champion.lolKey }}" class="cursor-pointer">
+                            {% if this.role != enum('App\\Enum\\DraftRole').Spectator %}
+                                <input type="radio" name="champion_grid_item" id="champion_grid_item_{{ champion.champion.lolKey }}" value="{{ champion.champion.id }}"
+                                       {% if not this.draft.championAvailable(champion.champion) or this.draftSide !== this.draft.phase.side %}disabled{% endif %}
+                                        class="hidden" />
+                            {% endif %}
+                            <img src="{{ asset(champion.champion.imageSquarePath) }}" alt="{{ champion.name }}'s image" width="96" height="96" />
+                        </label>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>
         {# Red side players #}
         <aside class="w-1/4 bg-slate-800 h-full">
-            {% for i in 0..4 %}
+            {% for i in 1..5 %}
                 <div class="h-1/5">
-                    <div class="w-full h-full {{ this.draft.phase.pickPhaseForSide(enum('App\\Enum\\DraftSide').Red, i + 1) ? 'current-phase current-phase__red' : '' }}">
-                        <div class="player-window player-window__red relative h-full w-full">
+                    <div class="w-full h-full {{ not this.draft.isSandbox and this.draft.phase.pickPhaseForSide(enum('App\\Enum\\DraftSide').Red, i) ? 'current-phase current-phase__red' : '' }}">
+                        <div class="player-window player-window__red relative h-full w-full"
+                             data-drop-action="{{ enum('App\\Enum\\DraftAction').Pick.value }}"
+                             data-drop-side="{{ enum('App\\Enum\\DraftSide').Red.value }}"
+                             data-drop-index="{{ i }}"
+                        >
                             {% if this.draft.redSidePicks[i] is defined %}
                                 <img src="{{ asset(this.draft.redSidePicks[i].champion.imageSplashPath) }}" alt="image" class="w-full h-full object-cover object-[25%_15%]" />
                             {% else %}
                                 <div class="w-full h-full bg-none player-window__placeholder"></div>
                             {% endif %}
                             <div class="player-window__inner absolute top-0 left-0 z-[10] w-full h-full bg-slate-800/25 text-slate-200 uppercase p-8">
-                                <p>Player {{ i + 1 }}</p>
+                                <p>Player {{ i }}</p>
                             </div>
                         </div>
                     </div>
@@ -133,8 +156,12 @@
         {# Blue side bans #}
         <div class="w-1/4 bg-sky-900 px-8 flex items-center justify-center">
             <div class="flex justify-between gap-4">
-                {% for i in 0..4 %}
-                    <div {% if this.draft.phase.banPhaseForSide(enum('App\\Enum\\DraftSide').Blue, i + 1) %}class="current-phase current-phase__blue"{% endif %}>
+                {% for i in 1..5 %}
+                    <div {% if not this.draft.isSandbox and this.draft.phase.banPhaseForSide(enum('App\\Enum\\DraftSide').Blue, i) %}class="current-phase current-phase__blue"{% endif %}
+                         data-drop-action="{{ enum('App\\Enum\\DraftAction').Ban.value }}"
+                         data-drop-side="{{ enum('App\\Enum\\DraftSide').Blue.value }}"
+                         data-drop-index="{{ i }}"
+                    >
                         {% if this.draft.blueSideBans[i] is defined %}
                             <div class="ban">
                                 <img src="{{ asset(this.draft.blueSideBans[i].champion.imageSquarePath) }}" alt="image" width="64" height="64" class="grayscale-100" />
@@ -170,8 +197,12 @@
         {# Red side bans #}
         <div class="w-1/4 bg-red-900 px-8 flex items-center justify-center">
             <div class="flex justify-between gap-4">
-                {% for i in 0..4 %}
-                    <div {% if this.draft.phase.banPhaseForSide(enum('App\\Enum\\DraftSide').Red, i + 1) %}class="current-phase current-phase__red"{% endif %}>
+                {% for i in 1..5 %}
+                    <div {% if not this.draft.isSandbox and this.draft.phase.banPhaseForSide(enum('App\\Enum\\DraftSide').Red, i) %}class="current-phase current-phase__red"{% endif %}
+                         data-drop-action="{{ enum('App\\Enum\\DraftAction').Ban.value }}"
+                         data-drop-side="{{ enum('App\\Enum\\DraftSide').Red.value }}"
+                         data-drop-index="{{ i }}"
+                    >
                         {% if this.draft.redSideBans[i] is defined %}
                             <div class="ban">
                                 <img src="{{ asset(this.draft.redSideBans[i].champion.imageSquarePath) }}" alt="image" width="64" height="64" class="grayscale-100" />

@@ -21,14 +21,6 @@
         {% endif %}
     </head>
     <body>
-        <div class="h-screen w-screen grid grid-cols-[300px_1fr] overflow-x-hidden">
-            <aside class="shadow-r shadow-xl flex flex-col justify-between h-full bg-sidebar">
-                <h1>Drafteam</h1>
-                <p>Guest</p>
-            </aside>
-            <main class="p-12">
-                {% block body %}{% endblock %}
-            </main>
-        </div>
+        {% block body %}{% endblock %}
     </body>
 </html>

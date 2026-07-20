@@ -40,3 +40,5 @@ draft:
         text: 'Click this button once your team is ready.'
         waiting: 'Waiting for ready check'
         ready: 'Ready !'
+    overlay:
+        sandbox_mode: 'Sandbox mode'

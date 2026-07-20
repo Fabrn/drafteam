@@ -18,31 +18,71 @@ use Symfony\Component\Uid\Uuid;
 class Draft
 {
     /**
-     * @var list<DraftBan>
+     * @var array<int, DraftBan>
      */
     public array $blueSideBans {
-        get => $this->bans->filter(static fn(DraftBan $ban) => DraftSide::Blue === $ban->side)->getValues();
+        get {
+            $bans = $this->bans->filter(static fn(DraftBan $ban) => DraftSide::Blue === $ban->side);
+            $result = [];
+
+            /** @var DraftBan $ban */
+            foreach ($bans as $ban) {
+                $result[$ban->position] = $ban;
+            }
+
+            return $result;
+        }
     }
 
     /**
-     * @var list<DraftBan>
+     * @var array<int, DraftBan>
      */
     public array $redSideBans {
-        get => $this->bans->filter(static fn(DraftBan $ban) => DraftSide::Red === $ban->side)->getValues();
+        get {
+            $bans = $this->bans->filter(static fn(DraftBan $ban) => DraftSide::Red === $ban->side);
+            $result = [];
+
+            /** @var DraftBan $ban */
+            foreach ($bans as $ban) {
+                $result[$ban->position] = $ban;
+            }
+
+            return $result;
+        }
     }
 
     /**
-     * @var list<DraftPick>
+     * @var array<int, DraftPick>
      */
     public array $blueSidePicks {
-        get => $this->picks->filter(static fn(DraftPick $pick) => DraftSide::Blue === $pick->side)->getValues();
+        get {
+            $picks = $this->picks->filter(static fn(DraftPick $pick) => DraftSide::Blue === $pick->side);
+            $result = [];
+
+            /** @var DraftPick $pick */
+            foreach ($picks as $pick) {
+                $result[$pick->position] = $pick;
+            }
+
+            return $result;
+        }
     }
 
     /**
-     * @var list<DraftPick>
+     * @var array<int, DraftPick>
      */
     public array $redSidePicks {
-        get => $this->picks->filter(static fn(DraftPick $pick) => DraftSide::Red === $pick->side)->getValues();
+        get {
+            $picks = $this->picks->filter(static fn(DraftPick $pick) => DraftSide::Red === $pick->side);
+            $result = [];
+
+            /** @var DraftPick $pick */
+            foreach ($picks as $pick) {
+                $result[$pick->position] = $pick;
+            }
+
+            return $result;
+        }
     }
 
     #[ORM\Id]

@@ -58,6 +58,13 @@ class DraftController extends AbstractController
             $this->entityManager->persist($draft);
             $this->entityManager->flush();
 
+            if ($draft->isSandbox) {
+                return $this->redirectToRoute('draft_view', [
+                    'identifier' => $draft->identifier,
+                    'role' => $draft->spectatorUuid,
+                ]);
+            }
+
             return $this->render('Site/draft/codes.html.twig', [
                 'draft' => $draft,
             ]);

@@ -16,6 +16,8 @@ export default class extends Controller {
     };
 
     async initialize() {
+        const _this = this;
+
         this.component = await getComponent(this.element);
 
         document.querySelectorAll('[name="champion_grid_item"]').forEach(checkbox => {
@@ -34,6 +36,47 @@ export default class extends Controller {
                 });
             });
         });
+
+        document.querySelectorAll('[class^="champion_grid_item"]').forEach(draggable => {
+            draggable.addEventListener('dragstart', function (e) {
+                e.dataTransfer.setData('text/plain', draggable.getAttribute('data-id'));
+            });
+        });
+
+        document.querySelectorAll('[data-drop-action]').forEach(container => {
+            container.addEventListener('dragover', function (e) {
+                e.preventDefault();
+            });
+
+            container.addEventListener('drop', function (e) {
+                e.preventDefault();
+
+                const championId = Number.parseInt(e.dataTransfer.getData('text/plain'));
+
+                _this.component.action('choose', {
+                    championId,
+                    action: container.getAttribute('data-drop-action'),
+                    side: container.getAttribute('data-drop-side'),
+                    index: container.getAttribute('data-drop-index'),
+                });
+            });
+
+            container.addEventListener('contextmenu', function (e) {
+                e.preventDefault();
+
+                const dropzone = e.target.closest('[data-drop-action]');
+
+                if (!dropzone) {
+                    return;
+                }
+
+                _this.component.action('remove', {
+                    action: dropzone.getAttribute('data-drop-action'),
+                    side: dropzone.getAttribute('data-drop-side'),
+                    index: dropzone.getAttribute('data-drop-index'),
+                });
+            });
+        })
     }
 
     connect() {

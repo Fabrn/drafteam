@@ -40,3 +40,5 @@ draft:
         text: 'Cliquez sur ce bouton une fois que votre équipe est prête.'
         waiting: 'En attente du ready check'
         ready: 'Prêts !'
+    overlay:
+        sandbox_mode: 'Mode bac à sable'

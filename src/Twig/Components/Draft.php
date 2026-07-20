@@ -7,6 +7,7 @@ use App\Entity\ChampionData;
 use App\Entity\Draft as DraftEntity;
 use App\Entity\DraftBan;
 use App\Entity\DraftPick;
+use App\Enum\DraftAction;
 use App\Enum\DraftPhase;
 use App\Enum\DraftRole;
 use App\Enum\DraftSide;
@@ -19,6 +20,7 @@ use App\ValueObject\Mercure\Ban;
 use App\ValueObject\Mercure\Pick;
 use App\ValueObject\Mercure\PrePick;
 use App\ValueObject\Mercure\ReadyCheck;
+use App\ValueObject\Mercure\Remove;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\Mercure\HubInterface;
@@ -226,6 +228,98 @@ final class Draft
                 side: $this->draftSide,
                 position: $this->draft->phase->getPosition(),
             )),
+        ));
+    }
+
+    #[LiveAction]
+    public function choose(
+        #[LiveArg] int $championId,
+        #[LiveArg] DraftAction $action,
+        #[LiveArg] DraftSide $side,
+        #[LiveArg] int $index,
+    ): void {
+        if (!$this->draft->isSandbox) {
+            return;
+        }
+
+        $champion = $this->championRepository->find($championId);
+
+        if (!$this->draft->isChampionAvailable($champion)) {
+            return;
+        }
+
+        if (DraftAction::Pick === $action) {
+            $this->entityManager->persist(new DraftPick(
+                draft: $this->draft,
+                champion: $champion,
+                side: $side,
+                position: $index,
+                createdAt: new DatePoint(),
+            ));
+
+            $topic = new Pick($this->championDataRepository->findOneBy([
+                'champion' => $champion,
+                'language' => 'en_US', // TODO locale
+            ]));
+        } else {
+            $this->entityManager->persist(new DraftBan(
+                draft: $this->draft,
+                champion: $champion,
+                side: $side,
+                position: $index,
+                createdAt: new DatePoint(),
+            ));
+
+            $topic = new Ban($this->championDataRepository->findOneBy([
+                'champion' => $champion,
+                'language' => 'en_US', // TODO locale
+            ]));
+        }
+
+        $this->entityManager->flush();
+
+        $this->hub->publish(new Update(
+            topics: $this->draftFunctions->getDraftMercureUrl($this->draft),
+            data: \json_encode($topic),
+        ));
+    }
+
+    #[LiveAction]
+    public function remove(
+        #[LiveArg] DraftAction $action,
+        #[LiveArg] DraftSide $side,
+        #[LiveArg] int $index,
+    ): void {
+        if (!$this->draft->isSandbox) {
+            return;
+        }
+
+        if (DraftAction::Pick === $action) {
+            $item = $this->draft->picks->findFirst(function (int $i, DraftPick $draftPick) use ($side, $index) {
+                return $draftPick->position === $index && $draftPick->side === $side;
+            });
+
+            if (!$item instanceof DraftPick) {
+                return;
+            }
+        } else {
+            $item = $this->draft->bans->findFirst(function (int $i, DraftBan $draftBan) use ($side, $index) {
+                return $draftBan->position === $index && $draftBan->side === $side;
+            });
+
+            if (!$item instanceof DraftBan) {
+                return;
+            }
+        }
+
+        $topic = new Remove($item->champion);
+
+        $this->entityManager->remove($item);
+        $this->entityManager->flush();
+
+        $this->hub->publish(new Update(
+            topics: $this->draftFunctions->getDraftMercureUrl($this->draft),
+            data: \json_encode($topic),
         ));
     }
 }

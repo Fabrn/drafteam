@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout.html.twig' %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -44,7 +44,7 @@
     </script>
 {% endblock %}
 
-{% block body %}
+{% block main %}
     <h1>{{ 'draft.create.title' | trans }}</h1>
 
     {{ form_start(form) }}

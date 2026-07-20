@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="h-screen w-screen grid grid-cols-[300px_1fr] overflow-x-hidden">
+        <aside class="shadow-r shadow-xl flex flex-col justify-between h-full bg-sidebar">
+            <h1>Drafteam</h1>
+            <div class="flex items-center p-8 gap-2">
+                <twig:Icons:User />
+                <p>Guest</p>
+            </div>
+        </aside>
+        <main class="p-12 max-h-screen overflow-y-auto">
+            {% block main %}{% endblock %}
+        </main>
+    </div>
+{% endblock %}
