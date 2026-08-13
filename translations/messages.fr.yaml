@@ -45,3 +45,4 @@ draft:
 
 auth:
     disconnect: 'Déconnexion'
+    error: 'Une erreur est survenue durant la tentative de connexion au serveur d''authentification de Discord. Merci de réessayer plus tard.'

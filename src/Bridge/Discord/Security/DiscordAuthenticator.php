@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Security;
+namespace App\Bridge\Discord\Security;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use KnpU\OAuth2ClientBundle\Security\Authenticator\OAuth2Authenticator;
+use KnpU\OAuth2ClientBundle\Security\Exception\IdentityProviderAuthenticationException;
 use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -18,17 +19,19 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Wohali\OAuth2\Client\Provider\DiscordResourceOwner;
 
 final class DiscordAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
 {
     public function __construct(
         private readonly ClientRegistry $clientRegistry,
-        private readonly EntityManagerInterface $em,
+        private readonly EntityManagerInterface $entityManager,
         private readonly RouterInterface $router,
         private readonly UserRepository $userRepository,
         #[Autowire(param: 'app.locales')]
         private readonly string $locales,
+        private readonly TranslatorInterface $translator,
     ) {}
 
     public function start(Request $request, ?AuthenticationException $authException = null): RedirectResponse
@@ -51,18 +54,24 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
                 /** @var DiscordResourceOwner $discordUser */
                 $discordUser = $client->fetchUserFromToken($accessToken);
 
-                $user = $this->userRepository->findOneBy(["discordId" => $discordUser->getId()]);
+                $user = $this->userRepository->findOneBy(["discordProfile.id" => $discordUser->getId()]);
 
                 if (null === $user) {
                     $user = new User();
-                    $user->discordId = $discordUser->getId();
+                    $user->discordProfile->id = $discordUser->getId();
 
-                    $this->em->persist($user);
+                    $this->entityManager->persist($user);
                 }
 
-                $user->discordUsername = $discordUser->getUsername();
+                $arrayData = $discordUser->toArray();
 
-                $this->em->flush();
+                // Updating user data at each connection
+                $user->discordProfile->username = $discordUser->getUsername();
+                $user->discordProfile->globalUsername = $arrayData['global_name'] ?? null;
+                $user->discordProfile->avatarHash = $discordUser->getAvatarHash();
+                $user->discordProfile->locale = $arrayData['locale'] ?? null;
+
+                $this->entityManager->flush();
 
                 return $user;
             })
@@ -77,15 +86,27 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
         $user = $token->getUser();
         $user->lastlyLoggedInAt = new DatePoint();
 
-        $this->em->flush();
+        $this->entityManager->flush();
+
+        $locale = $request->getPreferredLanguage($locales) ?? $user->discordProfile->locale;
 
         return new RedirectResponse($this->router->generate('profile_index', [
-            '_locale' => 'en', // TODO
+            '_locale' => $locale,
         ]));
     }
 
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        dd($exception);
+        $message = \strtr($exception->getMessageKey(), $exception->getMessageData());
+
+        if ($exception instanceof IdentityProviderAuthenticationException) {
+            $message = $this->translator->trans('auth.error');
+        }
+
+        $request->getSession()->getFlashBag()->add('error', $message);
+
+        return new RedirectResponse($this->router->generate('index', [
+            '_locale' => $request->getPreferredLanguage(\explode('|', $this->locales)),
+        ]));
     }
 }

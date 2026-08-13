@@ -11,7 +11,7 @@ security:
             lazy: true
             provider: users
             custom_authenticators:
-                - App\Security\DiscordAuthenticator
+                - App\Bridge\Discord\Security\DiscordAuthenticator
             logout:
                 path: auth_logout
                 target: draft_create

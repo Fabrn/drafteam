@@ -45,3 +45,4 @@ draft:
 
 auth:
     disconnect: 'Disconnect'
+    error: 'Something went wrong while trying to connect to discord authentication server. Please try again later.'

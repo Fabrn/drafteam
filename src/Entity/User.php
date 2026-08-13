@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Bridge\Discord\Entity\DiscordProfile;
 use App\Enum\Role;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,17 +24,11 @@ class User implements UserInterface
 
     #[ORM\Column(length: 255, nullable: true)]
     public ?string $username {
-        get => $this->username ?? $this->discordUsername;
+        get => $this->username ?? $this->discordProfile->globalUsername ?? $this->discordProfile->username;
     }
 
     #[ORM\Column(type: 'date_point')]
     public DatePoint $createdAt;
-
-    #[ORM\Column(length: 255, unique: true, nullable: true)]
-    public ?string $discordId = null;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    public ?string $discordUsername = null;
 
     #[ORM\Column(type: 'date_point', nullable: true)]
     public ?DatePoint $lastlyLoggedInAt = null;
@@ -41,10 +36,14 @@ class User implements UserInterface
     #[ORM\Column(type: 'date_point', nullable: true)]
     public ?DatePoint $deletedAt = null;
 
+    #[ORM\Embedded]
+    public DiscordProfile $discordProfile;
+
     public function __construct()
     {
         $this->identifier = Uuid::v7();
         $this->createdAt = new DatePoint();
+        $this->discordProfile = new DiscordProfile();
     }
 
     public function getRoles(): array

@@ -1,5 +1,6 @@
 {% extends 'layout.html.twig' %}
 
 {% block main %}
+    <img src="https://cdn.discordapp.com/avatars/{{ app.user.discordProfile.id }}/{{ app.user.discordProfile.avatarHash }}.png" alt="Avatar" width="32" />
     <p>{{ app.user.username }}</p>
 {% endblock %}
