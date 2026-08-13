@@ -42,3 +42,6 @@ draft:
         ready: 'Prêts !'
     overlay:
         sandbox_mode: 'Mode bac à sable'
+
+auth:
+    disconnect: 'Déconnexion'

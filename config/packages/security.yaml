@@ -1,0 +1,17 @@
+security:
+    providers:
+        users:
+            entity:
+                class: 'App\Entity\User'
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            lazy: true
+            provider: users
+            custom_authenticators:
+                - App\Security\DiscordAuthenticator
+            logout:
+                path: auth_logout
+                target: draft_create

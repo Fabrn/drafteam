@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20260702091745 extends AbstractMigration
+final class Version20260813192009 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,12 +20,12 @@ final class Version20260702091745 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE draft ADD banned_lol_ids JSON');
+        $this->addSql('ALTER TABLE user ADD username VARCHAR(255) DEFAULT NULL, ADD discord_username VARCHAR(255) DEFAULT NULL, ADD lastly_logged_in_at DATETIME DEFAULT NULL');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE draft DROP banned_lol_ids');
+        $this->addSql('ALTER TABLE user DROP username, DROP discord_username, DROP lastly_logged_in_at');
     }
 }

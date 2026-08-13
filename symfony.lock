@@ -35,6 +35,18 @@
             "migrations/.gitignore"
         ]
     },
+    "knpuniversity/oauth2-client-bundle": {
+        "version": "2.20",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.20",
+            "ref": "1ff300d8c030f55c99219cc55050b97a695af3f6"
+        },
+        "files": [
+            "config/packages/knpu_oauth2_client.yaml"
+        ]
+    },
     "symfony/asset-mapper": {
         "version": "8.0",
         "recipe": {
@@ -151,6 +163,19 @@
         "files": [
             "config/packages/routing.yaml",
             "config/routes.yaml"
+        ]
+    },
+    "symfony/security-bundle": {
+        "version": "8.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "7.4",
+            "ref": "c42fee7802181cdd50f61b8622715829f5d2335c"
+        },
+        "files": [
+            "config/packages/security.yaml",
+            "config/routes/security.yaml"
         ]
     },
     "symfony/stimulus-bundle": {

@@ -42,3 +42,6 @@ draft:
         ready: 'Ready !'
     overlay:
         sandbox_mode: 'Sandbox mode'
+
+auth:
+    disconnect: 'Disconnect'

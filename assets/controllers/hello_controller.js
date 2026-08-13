@@ -1,5 +1,5 @@
-import { Controller } from '@hotwired/stimulus';
-import { getComponent } from '@symfony/ux-live-component';
+import {Controller} from '@hotwired/stimulus';
+import {getComponent} from '@symfony/ux-live-component';
 
 /*
  * This is an example Stimulus controller!
@@ -13,6 +13,7 @@ import { getComponent } from '@symfony/ux-live-component';
 export default class extends Controller {
     static values = {
         url: String,
+        timer: Boolean,
     };
 
     async initialize() {
@@ -93,6 +94,7 @@ export default class extends Controller {
 
             eventSource.onmessage = e => {
                 const json = JSON.parse(e.data);
+                console.log(json);
 
                 this.component.render();
             };

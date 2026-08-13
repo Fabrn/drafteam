@@ -85,6 +85,12 @@ class Draft
         }
     }
 
+    public bool $requiresTimer {
+        get {
+            return DraftStatus::Ongoing === $this->status;
+        }
+    }
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -107,6 +113,11 @@ class Draft
 
     #[ORM\Column(options: ['default' => 60])]
     public int $maxTimer = 60;
+
+    #[ORM\Column(nullable: true)]
+    public ?int $currentTimer  {
+        get => $this->currentTimer ?? ( 0 === $this->maxTimer ? null : $this->maxTimer );
+    }
 
     #[ORM\Column(options: ['default' => false])]
     public bool $blueTeamReadyChecked = false;

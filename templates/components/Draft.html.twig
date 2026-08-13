@@ -1,4 +1,4 @@
-<div {{ attributes.defaults(stimulus_controller('hello', { 'url': mercure(draft_mercure_url(this.draft)) })) }} class="h-screen max-h-screen relative">
+<div {{ attributes.defaults(stimulus_controller('hello', { 'url': mercure(draft_mercure_url(this.draft)), 'timer': this.draft.requiresTimer })) }} class="h-screen max-h-screen relative">
     {# Ready check screen #}
     {% if not this.draft.redTeamReadyChecked or not this.draft.blueTeamReadyChecked %}
         <div class="fixed top-0 left-0 bg-violet-900/75 text-slate-200 backdrop-blur-md w-screen h-screen z-[100] flex items-center justify-center">
@@ -46,9 +46,9 @@
                 </div>
             {% else %}
                 <div class="bg-slate-900 w-1/8 flex items-center justify-center">
-                    <p class="text-6xl">
-                        {% if this.draft.maxTimer %}
-                            {{ this.draft.maxTimer }}
+                    <p class="text-6xl timer">
+                        {% if this.draft.currentTimer is not null %}
+                            {{ this.draft.currentTimer }}
                         {% else %}
                             -
                         {% endif %}
@@ -58,9 +58,9 @@
                     <h2 class="text-4xl font-weight-bold">{{ this.draft.name }}</h2>
                 </div>
                 <div class="bg-slate-900 w-1/8 flex items-center justify-center">
-                    <p class="text-6xl">
-                        {% if this.draft.maxTimer %}
-                            {{ this.draft.maxTimer }}
+                    <p class="text-6xl timer">
+                        {% if this.draft.currentTimer is not null %}
+                            {{ this.draft.currentTimer }}
                         {% else %}
                             -
                         {% endif %}

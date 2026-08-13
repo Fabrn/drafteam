@@ -21,6 +21,7 @@ use App\ValueObject\Mercure\Pick;
 use App\ValueObject\Mercure\PrePick;
 use App\ValueObject\Mercure\ReadyCheck;
 use App\ValueObject\Mercure\Remove;
+use App\ValueObject\Mercure\TickTimer;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\Mercure\HubInterface;
@@ -128,6 +129,8 @@ final class Draft
 
         $this->draft->phase = $this->draft->phase->getNext();
 
+        $this->draft->currentTimer = $this->draft->maxTimer;
+
         $this->entityManager->flush();
 
         $this->hub->publish(new Update(
@@ -174,6 +177,8 @@ final class Draft
         } else {
             $this->draft->phase = $this->draft->phase->getNext();
         }
+
+        $this->draft->currentTimer = $this->draft->maxTimer;
 
         $this->entityManager->flush();
 
@@ -320,6 +325,25 @@ final class Draft
         $this->hub->publish(new Update(
             topics: $this->draftFunctions->getDraftMercureUrl($this->draft),
             data: \json_encode($topic),
+        ));
+    }
+
+    #[LiveAction]
+    public function tickTimer(): void
+    {
+        if ($this->draft->isSandbox) {
+            return;
+        }
+
+        $this->draft->currentTimer = \max(0, $this->draft->currentTimer - 1);
+
+        $this->entityManager->flush();
+
+        $this->hub->publish(new Update(
+            topics: $this->draftFunctions->getDraftMercureUrl($this->draft),
+            data: \json_encode(new TickTimer(
+                currentTimer: $this->draft->currentTimer,
+            )),
         ));
     }
 }

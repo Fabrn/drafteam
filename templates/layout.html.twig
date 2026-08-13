@@ -7,6 +7,14 @@
             <div class="flex items-center p-8 gap-2">
                 <twig:Icons:User />
                 <p>Guest</p>
+
+                {% if app.user is not null %}
+                    <a href="{{ path('auth_logout') }}">{{ 'auth.disconnect' | trans }}</a>
+                {% else %}
+                    <a href="{{ path('auth_discord_start') }}">
+                        Discord
+                    </a>
+                {% endif %}
             </div>
         </aside>
         <main class="p-12 max-h-screen overflow-y-auto">
