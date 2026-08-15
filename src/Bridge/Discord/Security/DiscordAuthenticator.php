@@ -88,6 +88,7 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
 
         $this->entityManager->flush();
 
+        // TODO ajout le fallback dans les params
         $locale = $request->getPreferredLanguage($locales) ?? $user->discordProfile->locale;
 
         return new RedirectResponse($this->router->generate('profile_index', [
@@ -106,6 +107,7 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
         $request->getSession()->getFlashBag()->add('error', $message);
 
         return new RedirectResponse($this->router->generate('index', [
+            // TODO ajout le fallback dans les params
             '_locale' => $request->getPreferredLanguage(\explode('|', $this->locales)),
         ]));
     }
