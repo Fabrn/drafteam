@@ -134,6 +134,9 @@ class Draft
     #[ORM\Column]
     public array $bannedLolIds = [];
 
+    #[ORM\ManyToOne(inversedBy: 'createdDrafts')]
+    public ?User $createdBy = null;
+
     #[ORM\OrderBy(['position' => Order::Ascending->value])]
     #[ORM\OneToMany(targetEntity: DraftBan::class, mappedBy: 'draft', cascade: ['persist', 'remove'])]
     public Collection $bans;

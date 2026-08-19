@@ -6,6 +6,7 @@
     --color-secondary: #009688;
     --color-background: #181132;
     --color-sidebar: #1d1535;
+    --color-discord: #5865F2;
 }
 
 body {
@@ -36,6 +37,9 @@ h1, h2, h3, h4, h5, h6 {
     cursor: pointer;
     opacity: 0;
 }
+.toggle.disabled input[type="checkbox"] {
+    cursor: not-allowed;
+}
 .toggle label {
     position: relative;
     display: flex;
@@ -64,6 +68,9 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 0 5px #0002;
     transition: 0.2s ease-in-out;
 }
+.toggle.disabled label:after {
+    background: #888;
+}
 .toggle input[type="checkbox"]:hover + label:after  {
     box-shadow: 0 2px 15px 0 #0002, 0 3px 8px 0 #0001;
 }
@@ -76,6 +83,9 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Form */
+input[disabled] {
+    cursor: not-allowed;
+}
 div.form-group {
     @apply flex flex-col gap-2;
 }
@@ -87,6 +97,9 @@ div.form-group input {
 }
 div.form-group input:focus {
     @apply border-secondary;
+}
+div.form-group input[disabled] {
+    @apply border-gray-800 bg-gray-100/10;
 }
 
 hr {

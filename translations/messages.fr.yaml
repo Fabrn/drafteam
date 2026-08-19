@@ -42,7 +42,40 @@ draft:
         ready: 'Prêts !'
     overlay:
         sandbox_mode: 'Mode bac à sable'
+    status:
+        pending: 'En attente du ready check'
+        finished: 'Terminée'
+        creating: 'En cours de création'
+        blue_ban_1: 'Ban Bleu 1'
+        blue_ban_2: 'Ban Bleu 2'
+        blue_ban_3: 'Ban Bleu 3'
+        blue_ban_4: 'Ban Bleu 4'
+        blue_ban_5: 'Ban Bleu 5'
+        red_ban_1: 'Ban Rouge 1'
+        red_ban_2: 'Ban Rouge 2'
+        red_ban_3: 'Ban Rouge 3'
+        red_ban_4: 'Ban Rouge 4'
+        red_ban_5: 'Ban Rouge 5'
+        blue_pick_1: 'Choix Bleu 1'
+        blue_pick_2: 'Choix Bleu 2'
+        blue_pick_3: 'Choix Bleu 3'
+        blue_pick_4: 'Choix Bleu 4'
+        blue_pick_5: 'Choix Bleu 5'
+        red_pick_1: 'Choix Rouge 1'
+        red_pick_2: 'Choix Rouge 2'
+        red_pick_3: 'Choix Rouge 3'
+        red_pick_4: 'Choix Rouge 4'
+        red_pick_5: 'Choix Rouge 5'
 
 auth:
     disconnect: 'Déconnexion'
     error: 'Une erreur est survenue durant la tentative de connexion au serveur d''authentification de Discord. Merci de réessayer plus tard.'
+    discord: 'Connexion via Discord'
+
+profile:
+    title: 'Mon profil'
+    latest_drafts:
+        view_all: 'Voir tout'
+        none: 'Aucune draft à afficher pour le moment.'
+        finished: 'Dernières drafts terminées'
+        sandboxes: 'Dernières sandboxes'

@@ -17,16 +17,16 @@ enum DraftPhase: string
     case RedBan5 = 'red_ban_5';
 
     // Picks
-    case BluePick1 = 'blue_pick1';
-    case BluePick2 = 'blue_pick2';
-    case BluePick3 = 'blue_pick3';
-    case BluePick4 = 'blue_pick4';
-    case BluePick5 = 'blue_pick5';
-    case RedPick1 = 'red_pick1';
-    case RedPick2 = 'red_pick2';
-    case RedPick3 = 'red_pick3';
-    case RedPick4 = 'red_pick4';
-    case RedPick5 = 'red_pick5';
+    case BluePick1 = 'blue_pick_1';
+    case BluePick2 = 'blue_pick_2';
+    case BluePick3 = 'blue_pick_3';
+    case BluePick4 = 'blue_pick_4';
+    case BluePick5 = 'blue_pick_5';
+    case RedPick1 = 'red_pick_1';
+    case RedPick2 = 'red_pick_2';
+    case RedPick3 = 'red_pick_3';
+    case RedPick4 = 'red_pick_4';
+    case RedPick5 = 'red_pick_5';
 
     /**
      * @return list<self>

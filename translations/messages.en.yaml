@@ -42,7 +42,40 @@ draft:
         ready: 'Ready !'
     overlay:
         sandbox_mode: 'Sandbox mode'
+    status:
+        pending: 'Waiting for ready check'
+        finished: 'Finished'
+        creating: 'Creating'
+        blue_ban_1: 'Blue Ban 1'
+        blue_ban_2: 'Blue Ban 2'
+        blue_ban_3: 'Blue Ban 3'
+        blue_ban_4: 'Blue Ban 4'
+        blue_ban_5: 'Blue Ban 5'
+        red_ban_1: 'Red Ban 1'
+        red_ban_2: 'Red Ban 2'
+        red_ban_3: 'Red Ban 3'
+        red_ban_4: 'Red Ban 4'
+        red_ban_5: 'Red Ban 5'
+        blue_pick_1: 'Blue Pick 1'
+        blue_pick_2: 'Blue Pick 2'
+        blue_pick_3: 'Blue Pick 3'
+        blue_pick_4: 'Blue Pick 4'
+        blue_pick_5: 'Blue Pick 5'
+        red_pick_1: 'Red Pick 1'
+        red_pick_2: 'Red Pick 2'
+        red_pick_3: 'Red Pick 3'
+        red_pick_4: 'Red Pick 4'
+        red_pick_5: 'Red Pick 5'
 
 auth:
     disconnect: 'Disconnect'
     error: 'Something went wrong while trying to connect to discord authentication server. Please try again later.'
+    discord: 'Connect via Discord'
+
+profile:
+    title: 'My profile'
+    latest_drafts:
+        view_all: 'View all'
+        none: 'Nothing to show yet.'
+        finished: 'Latest finished drafts'
+        sandboxes: 'Latest sandboxes'

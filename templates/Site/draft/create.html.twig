@@ -12,6 +12,31 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
+        const updateDisableTimerInput = function () {
+            const disableTimerCheckbox = document.querySelector('[name="draft[disableTimer]"]');
+
+            disableTimerCheckbox.disabled = document.querySelector('[name="draft[isSandbox]"]').checked;
+
+            if (disableTimerCheckbox.disabled) {
+                disableTimerCheckbox.checked = false;
+                disableTimerCheckbox.closest('.toggle').classList.add('disabled');
+            } else {
+                disableTimerCheckbox.closest('.toggle').classList.remove('disabled');
+            }
+        }
+
+        const updateTimerInput = function () {
+            const input = document.querySelector('[name="draft[maxTimer]"]');
+            const sandboxCheckbox = document.querySelector('[name="draft[isSandbox]"]');
+            const disableTimerCheckbox = document.querySelector('[name="draft[disableTimer]"]');
+
+            if (sandboxCheckbox.checked || disableTimerCheckbox.checked) {
+                input.disabled = true;
+            } else {
+                input.disabled = false;
+            }
+        };
+
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('unavailable_champion_search').addEventListener('keyup', function () {
                 const search = this.value;
@@ -40,6 +65,18 @@
 
                 document.getElementById('modal-champion-grid').setAttribute('aria-hidden', 'true');
             });
+
+            document.querySelector('[name="draft[isSandbox]"]').addEventListener('change', function () {
+                updateDisableTimerInput();
+                updateTimerInput();
+            });
+
+            document.querySelector('[name="draft[disableTimer]"]').addEventListener('change', function () {
+                updateTimerInput();
+            });
+
+            updateDisableTimerInput();
+            updateTimerInput();
         });
     </script>
 {% endblock %}
@@ -73,6 +110,11 @@
         <div>
             <div class="form-group mb-8">
                 {{ form_label(form.name) }}
+
+                {% for fieldError in field_errors(form.name) %}
+                    <p class="text-red-800 text-xs">{{ fieldError }}</p>
+                {% endfor %}
+
                 {{ form_widget(form.name, { attr: { 'data-form-type': 'other' }}) }}
             </div>
 

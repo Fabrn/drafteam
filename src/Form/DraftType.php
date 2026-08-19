@@ -39,11 +39,15 @@ final class DraftType extends AbstractType
             'required' => true,
             'label' => t('draft.create.form.name'),
             'constraints' => [
-                new Length(max: 32),
+                new Length(
+                    min: 4,
+                    max: 32,
+                ),
             ],
             'attr' => [
                 'placeholder' => self::DRAFT_NAME_PLACEHOLDERS[\random_int(0, \count(self::DRAFT_NAME_PLACEHOLDERS) - 1)],
                 'autofocus' => true,
+                'maxlength' => 32,
             ],
         ]);
 

@@ -2,17 +2,32 @@
 
 {% block body %}
     <div class="h-screen w-screen grid grid-cols-[300px_1fr] overflow-x-hidden">
-        <aside class="shadow-r shadow-xl flex flex-col justify-between h-full bg-sidebar">
-            <h1>Drafteam</h1>
-            <div class="flex items-center p-8 gap-2">
-                <twig:Icons:User />
-                <p>Guest</p>
+        <aside class="shadow-r shadow-xl flex flex-col justify-between h-full bg-sidebar p-6">
+            {% if app.user is not null %}
+                <a href="{{ path('profile_index', { _locale: app.request.locale }) }}" class="bg-primary/50 p-4 flex items-center justify-center gap-4 rounded-xl">
+                    <img src="{{ user_avatar(app.user) }}" alt="Avatar" width="32" class="rounded-full" />
+                    <p>{{ app.user.username }}</p>
+                </a>
+            {% endif %}
+
+            <div class="flex flex-col items-center gap-2">
+                <a href="{{ path('draft_create', { _locale: app.request.locale }) }}" class="block w-full">
+                    <button type="button" class="btn btn-primary w-full flex items-center gap-2 justify-center">
+                        <twig:Icons:Plus /> {{ 'draft.create.title' | trans }}
+                    </button>
+                </a>
 
                 {% if app.user is not null %}
-                    <a href="{{ path('auth_logout') }}">{{ 'auth.disconnect' | trans }}</a>
+                    <a href="{{ path('auth_logout') }}" class="block w-full">
+                        <button type="button" class="btn bg-primary/10 w-full">
+                            {{ 'auth.disconnect' | trans }}
+                        </button>
+                    </a>
                 {% else %}
-                    <a href="{{ path('auth_discord_start') }}">
-                        Discord
+                    <a href="{{ path('auth_discord_start') }}" class="block w-full">
+                        <button type="button" class="btn bg-discord w-full">
+                            {{ 'auth.discord' | trans }}
+                        </button>
                     </a>
                 {% endif %}
             </div>

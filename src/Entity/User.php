@@ -5,6 +5,9 @@ namespace App\Entity;
 use App\Bridge\Discord\Entity\DiscordProfile;
 use App\Enum\Role;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Order;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Clock\DatePoint;
@@ -39,11 +42,19 @@ class User implements UserInterface
     #[ORM\Embedded]
     public DiscordProfile $discordProfile;
 
+    /**
+     * @var Collection<int, Draft>
+     */
+    #[ORM\OrderBy(['createdAt' => Order::Descending->value])]
+    #[ORM\OneToMany(targetEntity: Draft::class, mappedBy: 'createdBy')]
+    public Collection $createdDrafts;
+
     public function __construct()
     {
         $this->identifier = Uuid::v7();
         $this->createdAt = new DatePoint();
         $this->discordProfile = new DiscordProfile();
+        $this->createdDrafts = new ArrayCollection();
     }
 
     public function getRoles(): array

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Champion;
 use App\Entity\Draft;
+use App\Entity\User;
 use App\Enum\DraftStatus;
 use App\Form\DraftType;
 use App\Repository\ChampionDataRepository;
@@ -15,6 +16,7 @@ use Symfony\Component\Clock\DatePoint;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/{_locale}/draft', name: 'draft_', requirements: ['_locale' => 'en|fr'], defaults: ['_locale' => 'en'])]
 class DraftController extends AbstractController
@@ -24,7 +26,7 @@ class DraftController extends AbstractController
     ) {}
 
     #[Route('/create', name: 'create')]
-    public function create(Request $request, ChampionDataRepository $championDataRepository): Response
+    public function create(Request $request, ChampionDataRepository $championDataRepository, #[CurrentUser] ?User $user = null): Response
     {
         $draft = new Draft(
             name: '',
@@ -38,6 +40,7 @@ class DraftController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $draft->status = DraftStatus::Pending;
+            $draft->createdBy = $user;
 
             if ($draft->isSandbox) {
                 // Automatic ready check on sandbox creation
