@@ -29,8 +29,8 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
         private readonly EntityManagerInterface $entityManager,
         private readonly RouterInterface $router,
         private readonly UserRepository $userRepository,
-        #[Autowire(param: 'app.locales')]
-        private readonly string $locales,
+        #[Autowire(param: 'kernel.enabled_locales')]
+        private readonly array $locales,
         private readonly TranslatorInterface $translator,
     ) {}
 
@@ -80,8 +80,6 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        $locales = \explode('|', $this->locales);
-
         /** @var User $user */
         $user = $token->getUser();
         $user->lastlyLoggedInAt = new DatePoint();
@@ -89,7 +87,7 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
         $this->entityManager->flush();
 
         // TODO ajout le fallback dans les params
-        $locale = $request->getPreferredLanguage($locales) ?? $user->discordProfile->locale;
+        $locale = $request->getPreferredLanguage($this->locales) ?? $user->discordProfile->locale;
 
         return new RedirectResponse($this->router->generate('profile_index', [
             '_locale' => $locale,
@@ -108,7 +106,7 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
 
         return new RedirectResponse($this->router->generate('index', [
             // TODO ajout le fallback dans les params
-            '_locale' => $request->getPreferredLanguage(\explode('|', $this->locales)),
+            '_locale' => $request->getPreferredLanguage($this->locales),
         ]));
     }
 }

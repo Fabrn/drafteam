@@ -79,3 +79,6 @@ profile:
         none: 'Aucune draft à afficher pour le moment.'
         finished: 'Dernières drafts terminées'
         sandboxes: 'Dernières sandboxes'
+    waiting_drafts:
+        status: 'Statut'
+        created_at: 'Date de création'

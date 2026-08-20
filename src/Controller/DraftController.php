@@ -6,6 +6,7 @@ use App\Entity\Champion;
 use App\Entity\Draft;
 use App\Entity\User;
 use App\Enum\DraftStatus;
+use App\Enum\Role;
 use App\Form\DraftType;
 use App\Repository\ChampionDataRepository;
 use App\Repository\ChampionRepository;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/{_locale}/draft', name: 'draft_', requirements: ['_locale' => 'en|fr'], defaults: ['_locale' => 'en'])]
 class DraftController extends AbstractController
@@ -82,9 +84,32 @@ class DraftController extends AbstractController
     #[Route('/{identifier}/{role}', name: 'view')]
     public function view(DraftWithRole $draftWithRole, ChampionRepository $championRepository): Response
     {
+        if (null !== $draftWithRole->draft->cancelledAt) {
+            throw $this->createNotFoundException();
+        }
+
         return $this->render('Site/draft/view.html.twig', [
             'draftWithRole' => $draftWithRole,
             'champions' => $championRepository->findAll(),
         ]);
+    }
+
+    #[IsGranted(Role::User->value)]
+    #[Route('/{identifier}/cancel', name: 'cancel')]
+    public function cancel(Draft $draft, #[CurrentUser] User $user): Response
+    {
+        if ($draft->createdBy?->id !== $user->id) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if (null !== $draft->cancelledAt) {
+            return new Response(status: Response::HTTP_NO_CONTENT);
+        }
+
+        $draft->cancelledAt = new DatePoint();
+
+        $this->entityManager->flush();
+
+        return new Response(status: Response::HTTP_NO_CONTENT);
     }
 }

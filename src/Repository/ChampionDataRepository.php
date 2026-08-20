@@ -16,8 +16,8 @@ class ChampionDataRepository extends ServiceEntityRepository
 {
     public function __construct(
         ManagerRegistry $registry,
-        #[Autowire(param: 'app.locales')]
-        private readonly string $locales,
+        #[Autowire(param: 'kernel.enabled_locales')]
+        private readonly array $locales,
     ) {
         parent::__construct($registry, ChampionData::class);
     }
@@ -42,9 +42,8 @@ class ChampionDataRepository extends ServiceEntityRepository
      */
     public function findByRequestLanguage(Request $request): array
     {
-        $locales = \explode('|', $this->locales);
         $data = $this->findBy(
-            criteria: ['language' => $request->getPreferredLanguage($locales)],
+            criteria: ['language' => $request->getPreferredLanguage($this->locales)],
             orderBy: ['name' => 'ASC'],
         );
 

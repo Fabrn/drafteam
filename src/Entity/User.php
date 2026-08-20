@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Bridge\Discord\Entity\DiscordProfile;
+use App\Enum\DraftStatus;
 use App\Enum\Role;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -17,6 +18,20 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 class User implements UserInterface
 {
+    /**
+     * @var list<Draft>
+     */
+    public array $waitingDrafts {
+        get {
+            return $this->createdDrafts
+                ->filter(static function (Draft $draft): bool {
+                    return !$draft->isSandbox && \in_array($draft->status, [DraftStatus::Pending, DraftStatus::Ongoing], strict: true);
+                })
+                ->getValues()
+            ;
+        }
+    }
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

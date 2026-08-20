@@ -79,3 +79,6 @@ profile:
         none: 'Nothing to show yet.'
         finished: 'Latest finished drafts'
         sandboxes: 'Latest sandboxes'
+    waiting_drafts:
+        status: 'Status'
+        created_at: 'Creation date'

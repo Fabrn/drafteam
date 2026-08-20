@@ -8,4 +8,5 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 class Close
 {
     public string $color = 'currentColor';
+    public int $size = 24;
 }

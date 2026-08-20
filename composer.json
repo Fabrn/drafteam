@@ -39,7 +39,8 @@
         "symfony/validator": "^8.0.10",
         "symfony/yaml": "8.0.*",
         "symfonycasts/tailwind-bundle": "^0.14.0",
-        "twig/extra-bundle": "^2.12|^3.0",
+        "twig/extra-bundle": "^3.24",
+        "twig/intl-extra": "^3.26",
         "twig/twig": "^2.12|^3.0",
         "wohali/oauth2-discord-new": "^1.2"
     },

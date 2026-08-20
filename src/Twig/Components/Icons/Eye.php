@@ -7,5 +7,5 @@ use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 #[AsTwigComponent]
 class Eye
 {
-
+    public int $size = 24;
 }
