@@ -238,10 +238,14 @@ final class Draft
 
     #[LiveAction]
     public function choose(
-        #[LiveArg] int $championId,
-        #[LiveArg] DraftAction $action,
-        #[LiveArg] DraftSide $side,
-        #[LiveArg] int $index,
+        #[LiveArg]
+        int $championId,
+        #[LiveArg]
+        DraftAction $action,
+        #[LiveArg]
+        DraftSide $side,
+        #[LiveArg]
+        int $index,
     ): void {
         if (!$this->draft->isSandbox) {
             return;
@@ -290,27 +294,27 @@ final class Draft
     }
 
     #[LiveAction]
-    public function remove(
-        #[LiveArg] DraftAction $action,
-        #[LiveArg] DraftSide $side,
-        #[LiveArg] int $index,
-    ): void {
+    public function remove(#[LiveArg] DraftAction $action, #[LiveArg] DraftSide $side, #[LiveArg] int $index): void
+    {
         if (!$this->draft->isSandbox) {
             return;
         }
 
         if (DraftAction::Pick === $action) {
-            $item = $this->draft->picks->findFirst(function (int $i, DraftPick $draftPick) use ($side, $index) {
-                return $draftPick->position === $index && $draftPick->side === $side;
-            });
+            $item = $this->draft->picks->findFirst(
+                static fn(int $i, DraftPick $draftPick) => (
+                    $draftPick->position === $index
+                    && $draftPick->side === $side
+                ),
+            );
 
             if (!$item instanceof DraftPick) {
                 return;
             }
         } else {
-            $item = $this->draft->bans->findFirst(function (int $i, DraftBan $draftBan) use ($side, $index) {
-                return $draftBan->position === $index && $draftBan->side === $side;
-            });
+            $item = $this->draft->bans->findFirst(
+                static fn(int $i, DraftBan $draftBan) => $draftBan->position === $index && $draftBan->side === $side,
+            );
 
             if (!$item instanceof DraftBan) {
                 return;
@@ -341,9 +345,7 @@ final class Draft
 
         $this->hub->publish(new Update(
             topics: $this->draftFunctions->getDraftMercureUrl($this->draft),
-            data: \json_encode(new TickTimer(
-                currentTimer: $this->draft->currentTimer,
-            )),
+            data: \json_encode(new TickTimer(currentTimer: $this->draft->currentTimer)),
         ));
     }
 }

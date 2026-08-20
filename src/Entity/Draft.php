@@ -115,8 +115,8 @@ class Draft
     public int $maxTimer = 60;
 
     #[ORM\Column(nullable: true)]
-    public ?int $currentTimer  {
-        get => $this->currentTimer ?? ( 0 === $this->maxTimer ? null : $this->maxTimer );
+    public ?int $currentTimer {
+        get => $this->currentTimer ?? (0 === $this->maxTimer ? null : $this->maxTimer);
     }
 
     #[ORM\Column(options: ['default' => false])]

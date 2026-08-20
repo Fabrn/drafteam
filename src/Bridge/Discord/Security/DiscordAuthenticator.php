@@ -36,46 +36,47 @@ final class DiscordAuthenticator extends OAuth2Authenticator implements Authenti
 
     public function start(Request $request, ?AuthenticationException $authException = null): RedirectResponse
     {
-        return new RedirectResponse($this->router->generate("auth_discord_start"), Response::HTTP_TEMPORARY_REDIRECT);
+        return new RedirectResponse($this->router->generate('auth_discord_start'), Response::HTTP_TEMPORARY_REDIRECT);
     }
 
     public function supports(Request $request): ?bool
     {
-        return $request->attributes->get("_route") === "auth_discord_login";
+        return $request->attributes->get('_route') === 'auth_discord_login';
     }
 
     public function authenticate(Request $request): SelfValidatingPassport
     {
-        $client = $this->clientRegistry->getClient("discord");
+        $client = $this->clientRegistry->getClient('discord');
         $accessToken = $this->fetchAccessToken($client);
 
-        return new SelfValidatingPassport(
-            new UserBadge($accessToken->getToken(), function () use ($accessToken, $client) {
-                /** @var DiscordResourceOwner $discordUser */
-                $discordUser = $client->fetchUserFromToken($accessToken);
+        return new SelfValidatingPassport(new UserBadge($accessToken->getToken(), function () use (
+            $accessToken,
+            $client,
+        ) {
+            /** @var DiscordResourceOwner $discordUser */
+            $discordUser = $client->fetchUserFromToken($accessToken);
 
-                $user = $this->userRepository->findOneBy(["discordProfile.id" => $discordUser->getId()]);
+            $user = $this->userRepository->findOneBy(['discordProfile.id' => $discordUser->getId()]);
 
-                if (null === $user) {
-                    $user = new User();
-                    $user->discordProfile->id = $discordUser->getId();
+            if (null === $user) {
+                $user = new User();
+                $user->discordProfile->id = $discordUser->getId();
 
-                    $this->entityManager->persist($user);
-                }
+                $this->entityManager->persist($user);
+            }
 
-                $arrayData = $discordUser->toArray();
+            $arrayData = $discordUser->toArray();
 
-                // Updating user data at each connection
-                $user->discordProfile->username = $discordUser->getUsername();
-                $user->discordProfile->globalUsername = $arrayData['global_name'] ?? null;
-                $user->discordProfile->avatarHash = $discordUser->getAvatarHash();
-                $user->discordProfile->locale = $arrayData['locale'] ?? null;
+            // Updating user data at each connection
+            $user->discordProfile->username = $discordUser->getUsername();
+            $user->discordProfile->globalUsername = $arrayData['global_name'] ?? null;
+            $user->discordProfile->avatarHash = $discordUser->getAvatarHash();
+            $user->discordProfile->locale = $arrayData['locale'] ?? null;
 
-                $this->entityManager->flush();
+            $this->entityManager->flush();
 
-                return $user;
-            })
-        );
+            return $user;
+        }));
     }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response

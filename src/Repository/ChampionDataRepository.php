@@ -42,16 +42,12 @@ class ChampionDataRepository extends ServiceEntityRepository
      */
     public function findByRequestLanguage(Request $request): array
     {
-        $data = $this->findBy(
-            criteria: ['language' => $request->getPreferredLanguage($this->locales)],
-            orderBy: ['name' => 'ASC'],
-        );
+        $data = $this->findBy(criteria: ['language' => $request->getPreferredLanguage($this->locales)], orderBy: [
+            'name' => 'ASC',
+        ]);
 
         if ([] === $data) {
-            $data = $this->findBy(
-                criteria: ['language' => 'en_US'],
-                orderBy: ['name' => 'ASC'],
-            );
+            $data = $this->findBy(criteria: ['language' => 'en_US'], orderBy: ['name' => 'ASC']);
         }
 
         return $data;

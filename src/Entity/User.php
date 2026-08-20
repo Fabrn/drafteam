@@ -23,12 +23,12 @@ class User implements UserInterface
      */
     public array $waitingDrafts {
         get {
-            return $this->createdDrafts
-                ->filter(static function (Draft $draft): bool {
-                    return !$draft->isSandbox && \in_array($draft->status, [DraftStatus::Pending, DraftStatus::Ongoing], strict: true);
-                })
-                ->getValues()
-            ;
+            return $this->createdDrafts->filter(static function (Draft $draft): bool {
+                return (
+                    !$draft->isSandbox
+                    && \in_array($draft->status, [DraftStatus::Pending, DraftStatus::Ongoing], strict: true)
+                );
+            })->getValues();
         }
     }
 

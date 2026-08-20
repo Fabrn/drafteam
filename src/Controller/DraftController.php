@@ -21,15 +21,19 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/{_locale}/draft', name: 'draft_', requirements: ['_locale' => 'en|fr'], defaults: ['_locale' => 'en'])]
-class DraftController extends AbstractController
+final class DraftController extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
     ) {}
 
     #[Route('/create', name: 'create')]
-    public function create(Request $request, ChampionDataRepository $championDataRepository, #[CurrentUser] ?User $user = null): Response
-    {
+    public function create(
+        Request $request,
+        ChampionDataRepository $championDataRepository,
+        #[CurrentUser]
+        ?User $user = null,
+    ): Response {
         $draft = new Draft(
             name: '',
             blueTeamName: '',
@@ -58,7 +62,10 @@ class DraftController extends AbstractController
                 $draft->maxTimer = 0;
             }
 
-            $draft->bannedLolIds = \array_map(static fn (Champion $c) => $c->lolKey, $form->get('bannedLolIds')->getData());
+            $draft->bannedLolIds = \array_map(
+                static fn(Champion $c) => $c->lolKey,
+                $form->get('bannedLolIds')->getData(),
+            );
 
             $this->entityManager->persist($draft);
             $this->entityManager->flush();

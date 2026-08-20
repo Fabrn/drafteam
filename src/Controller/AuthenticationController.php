@@ -9,15 +9,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/auth', name: 'auth_')]
-class AuthenticationController extends AbstractController
+final class AuthenticationController extends AbstractController
 {
     #[Route('/discord/login', name: 'discord_login')]
     public function discordLogin(Request $request, ClientRegistry $clientRegistry): void {}
 
-    #[Route("/discord/start", name: "discord_start")]
+    #[Route('/discord/start', name: 'discord_start')]
     public function discordStart(ClientRegistry $clientRegistry): RedirectResponse
     {
-        return $clientRegistry->getClient("discord")->redirect(["identify"]);
+        return $clientRegistry->getClient('discord')->redirect(['identify']);
     }
 
     #[Route('/logout', name: 'logout')]

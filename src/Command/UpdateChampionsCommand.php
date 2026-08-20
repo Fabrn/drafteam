@@ -69,7 +69,10 @@ final readonly class UpdateChampionsCommand
                 $fs->dumpFile($squarePath, \file_get_contents($squareUrl));
 
                 // Champion's splash art image
-                $splashUrl = \sprintf('https://ddragon.leagueoflegends.com/cdn/img/champion/splash/%s_0.jpg', $champion->id);
+                $splashUrl = \sprintf(
+                    'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/%s_0.jpg',
+                    $champion->id,
+                );
 
                 $dbSplashPath = '/images/champions/splash_arts/' . $champion->key . '.png';
                 $splashPath = $this->projectDir . '/public' . $dbSplashPath;

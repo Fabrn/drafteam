@@ -25,6 +25,7 @@ integrations = ["symfony"]
 ambiguous-function-call = { enabled = false }
 literal-named-argument = { enabled = false }
 halstead = { effort-threshold = 7000 }
+strict-types = { enabled = false }
 
 [analyzer]
 plugins = []
@@ -32,14 +33,13 @@ find-unused-definitions = true
 find-unused-expressions = true
 analyze-dead-code = false
 memoize-properties = true
-allow-possibly-undefined-array-keys = false
 check-throws = true
 unchecked-exceptions = ["Error", "LogicException"]
 unchecked-exception-classes = []
 check-missing-override = true
 find-unused-parameters = true
 strict-list-index-checks = true
-strict-array-index-existence = false
+strict-array-index-existence = true
 allow-array-truthy-operand = false
 no-boolean-literal-comparison = false
 check-missing-type-hints = false

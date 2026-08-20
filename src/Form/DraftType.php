@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
+
 use function Symfony\Component\Translation\t;
 
 final class DraftType extends AbstractType
@@ -30,7 +31,7 @@ final class DraftType extends AbstractType
         'Dignitas',
         'Fnatic',
         'Karmine Corp',
-        'FanPlus Phoenix'
+        'FanPlus Phoenix',
     ];
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -39,13 +40,13 @@ final class DraftType extends AbstractType
             'required' => true,
             'label' => t('draft.create.form.name'),
             'constraints' => [
-                new Length(
-                    min: 4,
-                    max: 32,
-                ),
+                new Length(min: 4, max: 32),
             ],
             'attr' => [
-                'placeholder' => self::DRAFT_NAME_PLACEHOLDERS[\random_int(0, \count(self::DRAFT_NAME_PLACEHOLDERS) - 1)],
+                'placeholder' => self::DRAFT_NAME_PLACEHOLDERS[\random_int(
+                    0,
+                    \count(self::DRAFT_NAME_PLACEHOLDERS) - 1,
+                )],
                 'autofocus' => true,
                 'maxlength' => 32,
             ],
@@ -58,7 +59,10 @@ final class DraftType extends AbstractType
                 new Length(max: 32),
             ],
             'attr' => [
-                'placeholder' => self::DRAFT_TEAM_NAME_PLACEHOLDERS[\random_int(0, \count(self::DRAFT_TEAM_NAME_PLACEHOLDERS) - 1)],
+                'placeholder' => self::DRAFT_TEAM_NAME_PLACEHOLDERS[\random_int(
+                    0,
+                    \count(self::DRAFT_TEAM_NAME_PLACEHOLDERS) - 1,
+                )],
             ],
         ]);
 
@@ -69,7 +73,10 @@ final class DraftType extends AbstractType
                 new Length(max: 32),
             ],
             'attr' => [
-                'placeholder' => self::DRAFT_TEAM_NAME_PLACEHOLDERS[\random_int(0, \count(self::DRAFT_TEAM_NAME_PLACEHOLDERS) - 1)],
+                'placeholder' => self::DRAFT_TEAM_NAME_PLACEHOLDERS[\random_int(
+                    0,
+                    \count(self::DRAFT_TEAM_NAME_PLACEHOLDERS) - 1,
+                )],
             ],
         ]);
 

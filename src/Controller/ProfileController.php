@@ -10,7 +10,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[IsGranted(Role::User->value)]
 #[Route('/{_locale}/profile', name: 'profile_')]
-class ProfileController extends AbstractController
+final class ProfileController extends AbstractController
 {
     #[Route(name: 'index')]
     public function index(): Response
