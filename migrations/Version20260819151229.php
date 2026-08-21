@@ -14,7 +14,7 @@ final class Version20260819151229 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Ajout créateur de la draft';
     }
 
     public function up(Schema $schema): void

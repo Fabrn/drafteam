@@ -27,6 +27,7 @@ class User implements UserInterface
                 return (
                     !$draft->isSandbox
                     && \in_array($draft->status, [DraftStatus::Pending, DraftStatus::Ongoing], strict: true)
+                    && null === $draft->cancelledAt
                 );
             })->getValues();
         }
@@ -74,9 +75,15 @@ class User implements UserInterface
 
     public function getRoles(): array
     {
-        return [
+        $roles = [
             Role::User->value,
         ];
+
+        if ('201817188611391488' === $this->discordProfile->id) {
+            $roles[] = Role::Admin->value;
+        }
+
+        return $roles;
     }
 
     public function getUserIdentifier(): string

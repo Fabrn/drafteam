@@ -75,10 +75,14 @@ auth:
 profile:
     title: 'My profile'
     latest_drafts:
-        view_all: 'View all'
         none: 'Nothing to show yet.'
-        finished: 'Latest finished drafts'
-        sandboxes: 'Latest sandboxes'
-    waiting_drafts:
-        status: 'Status'
-        created_at: 'Creation date'
+        finished:
+            title: 'Latest finished drafts'
+        sandboxes:
+            title: 'Latest sandboxes'
+
+words:
+    name: 'Name'
+    created_at: 'Creation date'
+    status: 'Status'
+    view_all: 'View all'

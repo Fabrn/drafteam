@@ -137,7 +137,7 @@ class Draft
     #[ORM\ManyToOne(inversedBy: 'createdDrafts')]
     public ?User $createdBy = null;
 
-    #[ORM\Column(type: 'date_point')]
+    #[ORM\Column(type: 'date_point', nullable: true)]
     public ?DatePoint $cancelledAt = null;
 
     #[ORM\OrderBy(['position' => Order::Ascending->value])]

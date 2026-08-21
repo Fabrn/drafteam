@@ -14,7 +14,7 @@ final class Version20260813215023 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Ajout du profil Discord sur les utilisateurs';
     }
 
     public function up(Schema $schema): void
